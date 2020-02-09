@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.27703.2018
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RecoderServerApplication", "RecoderServerApplication\RecoderServerApplication.csproj", "{18D0DD8B-C559-426C-B2B0-B801BB0B273A}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{18D0DD8B-C559-426C-B2B0-B801BB0B273A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{18D0DD8B-C559-426C-B2B0-B801BB0B273A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{18D0DD8B-C559-426C-B2B0-B801BB0B273A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{18D0DD8B-C559-426C-B2B0-B801BB0B273A}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {72417955-DF17-4A3A-A768-F21FC8258F1A}
+	EndGlobalSection
+EndGlobal

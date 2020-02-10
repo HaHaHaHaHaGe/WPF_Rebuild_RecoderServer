@@ -24,7 +24,6 @@
             </ListView.View>
             <ListBox x:Name="listBox" Height="100" Width="100"/>
         </ListView>
-        <Button x:Name="button1" Content="Close" HorizontalAlignment="Left" Margin="159,525,0,0" VerticalAlignment="Top" Width="95" Height="39" Click="button1_Click" />
         <TextBox x:Name="fstext" HorizontalAlignment="Left" Height="23" Margin="270,489,0,0" TextWrapping="Wrap" Text="8000" VerticalAlignment="Top" Width="120"/>
         <Label x:Name="label1" Content="fs:" HorizontalAlignment="Left" Margin="242,489,0,0" VerticalAlignment="Top"/>
 
@@ -32,20 +31,16 @@
         <ScrollBar Name="scYaw" Minimum="-180" Maximum="180" Margin="1134,-10,397,10" Visibility="Hidden" />
         <ScrollBar Name="scRoll" Minimum="-180" Maximum="180" Margin="1161,-10,370,10" Visibility="Hidden" />
         <Button x:Name="OpenCOM" Content="OpenCOM" HorizontalAlignment="Left" Margin="151,12,0,0" VerticalAlignment="Top" Width="75" Click="OpenCOM_Click"/>
-        <Button x:Name="bBlink" Content="Blink" HorizontalAlignment="Left" Margin="831,236,0,0" VerticalAlignment="Top" Width="75" IsEnabled="False" Click="bBlink_Click"/>
+        <Button x:Name="bBlink" Content="Blink" HorizontalAlignment="Left" Margin="831,222,0,0" VerticalAlignment="Top" Width="75" IsEnabled="False" Click="bBlink_Click"/>
         <Button x:Name="bInit" Content="Init" HorizontalAlignment="Left" Margin="831,271,0,0" VerticalAlignment="Top" Width="75" IsEnabled="False" Click="bInit_Click"/>
-        <Button x:Name="bBegin" Content="Begin" HorizontalAlignment="Left" Margin="831,160,0,0" VerticalAlignment="Top" Width="75" IsEnabled="False" Click="bBegin_Click"/>
-        <Button x:Name="bEnd" Content="End" HorizontalAlignment="Left" Margin="831,197,0,0" VerticalAlignment="Top" Width="75" IsEnabled="False" Click="bEnd_Click"/>
+        <Button x:Name="bBegin" Content="Begin" HorizontalAlignment="Left" Margin="831,130,0,0" VerticalAlignment="Top" Width="75" IsEnabled="False" Click="bBegin_Click"/>
+        <Button x:Name="bEnd" Content="End" HorizontalAlignment="Left" Margin="831,177,0,0" VerticalAlignment="Top" Width="75" IsEnabled="False" Click="bEnd_Click"/>
         <ComboBox x:Name="comboBox" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="120" PreviewMouseLeftButtonDown="Clink"/>
         <TextBox x:Name="FS" HorizontalAlignment="Left" Height="23" Margin="726,271,0,0" TextWrapping="Wrap" Text="8000" VerticalAlignment="Top" Width="43"/>
         <TextBox x:Name="GADFS" HorizontalAlignment="Left" Height="23" Margin="774,271,0,0" TextWrapping="Wrap" Text="30" VerticalAlignment="Top" Width="46"/>
         <TextBox x:Name="textBox12" HorizontalAlignment="Left" Height="23" Margin="911,271,0,0" TextWrapping="Wrap" Text="4" VerticalAlignment="Top" Width="36"/>
-        <Label Name="rand" Content="random" HorizontalAlignment="Left" Margin="738,12,0,0" VerticalAlignment="Top" Width="168" HorizontalContentAlignment="Right"/>
-        <Button Content="Read" HorizontalAlignment="Left" Margin="831,42,0,0" VerticalAlignment="Top" Width="75" Click="Button_Click_1"/>
-        <TextBox Name="SessionID" HorizontalAlignment="Left" Height="23" Margin="706,38,0,0" TextWrapping="Wrap" Text="1a2b3c4d5e01010" VerticalAlignment="Top" Width="120"/>
-        <Label Content="SessionID:" HorizontalAlignment="Left" Margin="630,36,0,0" VerticalAlignment="Top" Width="71"/>
-        <Button Name="bindb" Content="Bind" HorizontalAlignment="Left" Margin="831,83,0,0" VerticalAlignment="Top" Width="75" Click="Button_Click" IsEnabled="False"/>
-        <Button Name="radiate" IsEnabled="False" Content="Radiate" HorizontalAlignment="Left" Margin="246,13,0,0" VerticalAlignment="Top" Width="75" Click="radiate_Click"/>
+        <Label Name="rand" Content="random" HorizontalAlignment="Left" Margin="738,36,0,0" VerticalAlignment="Top" Width="168" HorizontalContentAlignment="Right"/>
+        <Button Name="radiate" IsEnabled="False" Content="Radiate" HorizontalAlignment="Left" Margin="726,130,0,0" VerticalAlignment="Top" Width="75" Click="radiate_Click"/>
         <ListView Name="list" HorizontalAlignment="Left" Height="248" Margin="12,37,0,0" VerticalAlignment="Top" Width="595">
             <ListView.View>
                 <GridView>
@@ -55,21 +50,13 @@
                 </GridView>
             </ListView.View>
         </ListView>
-        <Button Name="wificon" Content="Server" HorizontalAlignment="Left" Margin="831,122,0,0" VerticalAlignment="Top" Width="75" IsEnabled="False" Click="wificon_Click"/>
-        <TextBox Name="wifi" HorizontalAlignment="Left" Height="23" Margin="706,118,0,0" TextWrapping="Wrap" Text="ASUS" VerticalAlignment="Top" Width="120"/>
-        <TextBox Name="pass" HorizontalAlignment="Left" Height="23" Margin="706,156,0,0" TextWrapping="Wrap" Text="99775533" VerticalAlignment="Top" Width="120"/>
-        <TextBox Name="ip" HorizontalAlignment="Left" Height="23" Margin="706,193,0,0" TextWrapping="Wrap" Text="192.168.50.222" VerticalAlignment="Top" Width="120"/>
-        <TextBox Name="port" HorizontalAlignment="Left" Height="23" Margin="706,232,0,0" TextWrapping="Wrap" Text="8880" VerticalAlignment="Top" Width="120"/>
-        <Label Content="WiFi:" HorizontalAlignment="Left" Margin="630,116,0,0" VerticalAlignment="Top" Width="71" HorizontalContentAlignment="Right"/>
-        <Label Content="Password:" HorizontalAlignment="Left" Margin="630,154,0,0" VerticalAlignment="Top" Width="71" HorizontalContentAlignment="Right"/>
-        <Label Content="Server IP:" HorizontalAlignment="Left" Margin="630,191,0,0" VerticalAlignment="Top" Width="71" HorizontalContentAlignment="Right"/>
-        <Label Content="Port:" HorizontalAlignment="Left" Margin="630,230,0,0" VerticalAlignment="Top" Width="71" HorizontalContentAlignment="Right"/>
         <Label Content="packge:" HorizontalAlignment="Left" Margin="438,489,0,0" VerticalAlignment="Top"/>
         <TextBox Name="packge" HorizontalAlignment="Left" Height="23" Margin="497,489,0,0" TextWrapping="Wrap" Text="60" VerticalAlignment="Top" Width="120"/>
-        <Button Name="calib" Content="Calibration" HorizontalAlignment="Left" Height="19" Margin="630,271,0,0" VerticalAlignment="Top" Width="75" Click="calib_Click"/>
+        <Button Name="calib" Content="Calibration" HorizontalAlignment="Left" Height="19" Margin="726,177,0,0" VerticalAlignment="Top" Width="75" Click="calib_Click"/>
         <Label Content="Server IP:" HorizontalAlignment="Left" Margin="696,489,0,0" VerticalAlignment="Top"/>
         <TextBox Name="serverip" HorizontalAlignment="Left" Height="23" Margin="774,489,0,0" TextWrapping="Wrap" Text="192.168.50.222" VerticalAlignment="Top" Width="120"/>
-        <TextBox Name="bindname" HorizontalAlignment="Left" Height="23" Margin="706,79,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="120"/>
+        <TextBox Name="group" HorizontalAlignment="Left" Height="23" Margin="831,84,0,0" TextWrapping="Wrap" Text="A" VerticalAlignment="Top" Width="75" TextChanged="Group_TextChanged"/>
+        <Label Content="Group:" HorizontalAlignment="Left" Margin="729,84,0,0" VerticalAlignment="Top" Width="91"/>
 
 
 

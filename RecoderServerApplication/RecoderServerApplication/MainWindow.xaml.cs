@@ -31,8 +31,10 @@ namespace RecoderServerApplication
         public MainWindow()
         {
             InitializeComponent();
-            SoftID = SoftRandom.GetRandomString(8, true, false, true, false, "");
+            RandID = SoftRandom.GetRandomString(7, true, false, true, false, "");
+            SoftID = group.Text.ToArray()[0] + RandID;
             rand.Content = "ID:" + SoftID;
+
             Radio_Thread.Elapsed += Radio_Thread_Elapsed;
             UIthread.Start_UI_Refresh(this);
             //Process.Start("speex_decoder.exe","D:\\github_project\\AncientProjects\\RadioRecoder\\WPF_Server\\RecoderServerApplication\\RecoderServerApplication\\bin\\Release\\20190623225152_HS6YX83M\\HQOBJSQZ_2019-06-23-22-52-33-000_REC.wzr");
@@ -52,7 +54,7 @@ namespace RecoderServerApplication
         }
 
         string SoftID;
-
+        string RandID;
         private void Clink(object sender, MouseButtonEventArgs e)
         {
             string[] ArryPort = ComPort.GetALLCOM();
@@ -82,8 +84,8 @@ namespace RecoderServerApplication
                             bBlink.IsEnabled = true;
                             bInit.IsEnabled = true;
                             radiate.IsEnabled = true;
-                            bindb.IsEnabled = true;
-                            wificon.IsEnabled = true;
+                            //bindb.IsEnabled = true;
+                            //wificon.IsEnabled = true;
                         }
                         else
                         {
@@ -102,12 +104,12 @@ namespace RecoderServerApplication
                     bBlink.IsEnabled = false;
                     bInit.IsEnabled = false;
 
-                    bindname.IsEnabled = true;
-                    bindb.Content = "Bind";
+                    //bindname.IsEnabled = true;
+                    //bindb.Content = "Bind";
 
                     radiate.Content = "Radiate";
-                    bindb.IsEnabled = false;
-                    wificon.IsEnabled = false;
+                    //bindb.IsEnabled = false;
+                    //wificon.IsEnabled = false;
                     RF_DataAnalysis.Stop_RadioSend();
                 }
             }
@@ -150,35 +152,35 @@ namespace RecoderServerApplication
 
         Timer Radio_Thread = new Timer(100);
         bool Radio_MultiThread = true;
-        private void Button_Click(object sender, RoutedEventArgs e)
-        {
-            try
-            {
-                char[] remove = { ' ','\r','\n' };
-                string bind = bindname.Text.Trim(remove);
-                if (bind.Length > 10)
-                {
-                    MessageBox.Show("绑定名称过长");
-                    return;
-                }
-                listbox_value = bindname.Text.Trim(remove).ToString().Trim();
-            }
-            catch(Exception e2)
-            {
+        //private void Button_Click(object sender, RoutedEventArgs e)
+        //{
+        //    try
+        //    {
+        //        char[] remove = { ' ','\r','\n' };
+        //        string bind = bindname.Text.Trim(remove);
+        //        if (bind.Length > 10)
+        //        {
+        //            MessageBox.Show("绑定名称过长");
+        //            return;
+        //        }
+        //        listbox_value = bindname.Text.Trim(remove).ToString().Trim();
+        //    }
+        //    catch(Exception e2)
+        //    {
 
-            }
-            if (Radio_MultiThread)
-            {
-                Radio_Thread.Start();
-                bindb.Content = "Stop";
-            }
-            else
-            {
-                Radio_Thread.Stop();
-                bindb.Content = "Bind";
-            }
-            Radio_MultiThread = !Radio_MultiThread;
-        }
+        //    }
+        //    if (Radio_MultiThread)
+        //    {
+        //        Radio_Thread.Start();
+        //        bindb.Content = "Stop";
+        //    }
+        //    else
+        //    {
+        //        Radio_Thread.Stop();
+        //        bindb.Content = "Bind";
+        //    }
+        //    Radio_MultiThread = !Radio_MultiThread;
+        //}
 
 
 
@@ -191,24 +193,24 @@ namespace RecoderServerApplication
                 radiate.Content = "Cancle";
                 RF_DataAnalysis.Begin_RadioSend_Search(SoftID);
                 calib.IsEnabled = false;
-                bindb.IsEnabled = false;
+                //bindb.IsEnabled = false;
                 bBegin.IsEnabled = false;
                 bEnd.IsEnabled = false;
                 bBlink.IsEnabled = false;
                 bInit.IsEnabled = false;
-                wificon.IsEnabled = false;
+                //wificon.IsEnabled = false;
             }
             else
             {
                 radiate.Content = "Radiate";
                 RF_DataAnalysis.Stop_RadioSend();
                 calib.IsEnabled = true;
-                bindb.IsEnabled = true;
+                //bindb.IsEnabled = true;
                 bBegin.IsEnabled = true;
                 bEnd.IsEnabled = true;
                 bBlink.IsEnabled = true;
                 bInit.IsEnabled = true;
-                wificon.IsEnabled = true;
+               // wificon.IsEnabled = true;
             }
         }
 
@@ -230,42 +232,7 @@ namespace RecoderServerApplication
 
         }
         bool iswifibutton = false;
-        private void wificon_Click(object sender, RoutedEventArgs e)
-        {
-            iswifibutton = !iswifibutton;
-            if (iswifibutton)
-            {
-                wificon.Content = "Cancle..";
-                calib.IsEnabled = false;
-                radiate.IsEnabled = false;
-                bindb.IsEnabled = false;
-                bBegin.IsEnabled = false;
-                bEnd.IsEnabled = false;
-                bBlink.IsEnabled = false;
-                bInit.IsEnabled = false;
-                ip.IsEnabled = false;
-                port.IsEnabled = false;
-                wifi.IsEnabled = false;
-                pass.IsEnabled = false;
-                RF_DataAnalysis.Begin_RadioSend_WIFI(SoftID,wifi.Text,pass.Text,ip.Text,port.Text);
-            }
-            else
-            {
-                wificon.Content = "Server";
-                calib.IsEnabled = true;
-                radiate.IsEnabled = true;
-                bindb.IsEnabled = true;
-                bBegin.IsEnabled = true;
-                bEnd.IsEnabled = true;
-                bBlink.IsEnabled = true;
-                bInit.IsEnabled = true;
-                ip.IsEnabled = true;
-                port.IsEnabled = true;
-                wifi.IsEnabled = true;
-                pass.IsEnabled = true;
-                RF_DataAnalysis.Stop_RadioSend();
-            }
-        }
+
         bool iscalib = false;
         private void calib_Click(object sender, RoutedEventArgs e)
         {
@@ -275,24 +242,24 @@ namespace RecoderServerApplication
                 calib.Content = "Cancle";
                 RF_DataAnalysis.Begin_RadioSend_Calibration(SoftID);
                 //calib.IsEnabled = false;
-                bindb.IsEnabled = false;
+                //bindb.IsEnabled = false;
                 bBegin.IsEnabled = false;
                 bEnd.IsEnabled = false;
                 bBlink.IsEnabled = false;
                 bInit.IsEnabled = false;
-                wificon.IsEnabled = false;
+                //wificon.IsEnabled = false;
             }
             else
             {
                 calib.Content = "Calibration";
                 RF_DataAnalysis.Stop_RadioSend();
                 //calib.IsEnabled = true;
-                bindb.IsEnabled = true;
+                //bindb.IsEnabled = true;
                 bBegin.IsEnabled = true;
                 bEnd.IsEnabled = true;
                 bBlink.IsEnabled = true;
                 bInit.IsEnabled = true;
-                wificon.IsEnabled = true;
+                //wificon.IsEnabled = true;
             }
         }
         MultiThread.ListeningThread lis = new MultiThread.ListeningThread();
@@ -319,6 +286,15 @@ namespace RecoderServerApplication
             //byte[] strdata = Encoding.ASCII.GetBytes(str);
             //int i =WIFI_Protocol.Search_ByteArray_String(ref data,ref strdata);
             //MessageBox.Show(data[i].ToString());
+        }
+
+        private void Group_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            if (group.Text.ToArray().Length > 0)
+            {
+                SoftID = group.Text.ToArray()[0] + RandID;
+                rand.Content = "ID:" + SoftID;
+            }
         }
     }
 }

@@ -7,12 +7,13 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using RecoderServerApplication.ESP8266;
-
+using System.Threading;
 namespace RecoderServerApplication.MultiThread
 {
     class ListeningThread
     {
         public static List<ServiceThread> DeviceList_Thread = new List<ServiceThread>();
+        public List<string> error_message = new List<string>();
         Thread ListenThread;
         Socket Listen_Socket;
         IPEndPoint Server_End_Point;
@@ -36,21 +37,27 @@ namespace RecoderServerApplication.MultiThread
                     socket = Listen_Socket.Accept();
                 }
                 catch (Exception e)
-                { continue; }
+                {
+                    error_message.Add(e.Message);
+                    continue;
+                }
                 socket.ReceiveTimeout = 2000;
+               // Thread.Sleep(500);
                 while (true)
                 {
                     int recv_len = 0;
                     try
                     {
                         byte[] send = WIFI_Protocol.Construct_Data_Packet(new Protocol_Keyword_Function.TransData_Struct(Protocol_Keyword_Function.Protocol_Keyword.State_DeviceInfo,new byte[] {0,0,0,0,0,0,0,0 },new byte[] { }));
-                        socket.Send(send);
                         sendTimes++;
+                        socket.Send(send);
+                        
                         recv_len = socket.Receive(temporary, temporary_len, 1024 * 10 - temporary_len, SocketFlags.None);
 
                     }
                     catch(Exception e)
                     {
+                        error_message.Add(e.Message);
                         if (sendTimes == 5)
                         {
                             socket.Close();
@@ -107,6 +114,7 @@ namespace RecoderServerApplication.MultiThread
         }
 
 
+
         public void StartListen(int port,string ip,int wavfs,int wavfilesec,string wavfiledir)
         {
             _wavfs = wavfs;
@@ -143,13 +151,14 @@ namespace RecoderServerApplication.MultiThread
             return localaddr.ToString();
         }
 
-        public void Radio_Send_Message(byte[] data)
+        public void Radio_Send_Message(string targetid,byte[] data)
         {
             foreach (var item in DeviceList_Thread)
             {
                 try
                 {
-                    item.SendData(data);
+                    if(targetid == item.Device_Recv_Struct.Device_ID)
+                        item.SendData(data);
                 }
                 catch(Exception e)
                 {

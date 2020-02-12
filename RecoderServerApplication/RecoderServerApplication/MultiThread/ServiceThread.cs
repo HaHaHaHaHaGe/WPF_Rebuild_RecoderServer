@@ -125,6 +125,7 @@ namespace RecoderServerApplication.MultiThread
                     if (recv is State_Idle_refData idle_refdata)
                     {
                         dstate = (Device_State)idle_refdata.State;
+                        Device_Recv_Struct.Bind_User = idle_refdata.Binding_User;
                         switch (dstate)
                         {
                             case Device_State.Online:

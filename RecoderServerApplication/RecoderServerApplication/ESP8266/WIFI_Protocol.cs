@@ -114,13 +114,13 @@ namespace RecoderServerApplication.ESP8266
                             recvsum += srcdata[commLoc + search_list[i].Length + 4 + 4 + k];
                         if (recvsum == recvdatacheck)
                         {
-                            byte[] deviceid = new byte[8];
+                            byte[] deviceid = new byte[12];
                             byte[] data = null;
-                            Array.Copy(srcdata, commLoc + search_list[i].Length + 4 + 4, deviceid, 0, 8);
+                            Array.Copy(srcdata, commLoc + search_list[i].Length + 4 + 4, deviceid, 0, 12);
                             if (recvdatalen > 0)
                             {
                                 data = new byte[recvdatalen];
-                                Array.Copy(srcdata, commLoc + search_list[i].Length + 4 + 4 + 8, data, 0, recvdatalen);
+                                Array.Copy(srcdata, commLoc + search_list[i].Length + 4 + 4 + 12, data, 0, recvdatalen);
                             }
                             TransData_Struct recv = new TransData_Struct
                             {
@@ -201,13 +201,13 @@ namespace RecoderServerApplication.ESP8266
                             recvsum += srcdata[commLoc + item.Value.State_string.Length + 4 + 4 + i];
                         if (recvsum == recvdatacheck)
                         {
-                            byte[] deviceid = new byte[8];
+                            byte[] deviceid = new byte[12];
                             byte[] data = null;
-                            Array.Copy(srcdata, commLoc + item.Value.State_string.Length + 4 + 4, deviceid, 0, 8);
+                            Array.Copy(srcdata, commLoc + item.Value.State_string.Length + 4 + 4, deviceid, 0, 12);
                             if (recvdatalen > 0)
                             {
                                 data = new byte[recvdatalen];
-                                Array.Copy(srcdata, commLoc + item.Value.State_string.Length + 4 + 4 + 8, data, 0, recvdatalen);
+                                Array.Copy(srcdata, commLoc + item.Value.State_string.Length + 4 + 4 + 12, data, 0, recvdatalen);
                             }
                             TransData_Struct recv = new TransData_Struct
                             {
@@ -247,7 +247,7 @@ namespace RecoderServerApplication.ESP8266
         public static byte[] Construct_Data_Packet(TransData_Struct stu)
         {
             int sum = 0;
-            byte[] data = new byte[Dic_Protocol[stu.Keyword].State_string.Length + stu.Data.Length + 8 + 8];
+            byte[] data = new byte[Dic_Protocol[stu.Keyword].State_string.Length + stu.Data.Length + stu.Device_ID.Length + 8];
             byte[] strdata = Encoding.Default.GetBytes(Dic_Protocol[stu.Keyword].State_string);
             for (int i = 0; i < Dic_Protocol[stu.Keyword].State_string.Length; i++)
             {
@@ -262,7 +262,7 @@ namespace RecoderServerApplication.ESP8266
             for (int i = 0; i < stu.Data.Length; i++)
             {
                 sum += stu.Data[i];
-                data[i + 16 + Dic_Protocol[stu.Keyword].State_string.Length] = stu.Data[i];
+                data[i + 8 + stu.Device_ID.Length + Dic_Protocol[stu.Keyword].State_string.Length] = stu.Data[i];
             }
             data[Dic_Protocol[stu.Keyword].State_string.Length] = (byte)(stu.Data.Length >> 24);
             data[Dic_Protocol[stu.Keyword].State_string.Length + 1] = (byte)(stu.Data.Length >> 16);

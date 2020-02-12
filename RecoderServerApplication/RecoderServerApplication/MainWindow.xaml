@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:RecoderServerApplication"
         mc:Ignorable="d"
-        Title="Recoder Server Application" Height="612.428" Width="994.681">
+        Title="Recoder Server Application" Height="612.428" Width="1286.681">
     <Grid>
         <Button x:Name="startbutton" Content="StartServer" HorizontalAlignment="Left" Margin="10,525,0,0" VerticalAlignment="Top" Width="88"  Height="34" Click="button_Click_2"/>
         <TextBox x:Name="porttext" HorizontalAlignment="Left" Height="23" Margin="61,489,0,0" TextWrapping="Wrap" Text="8880" VerticalAlignment="Top" Width="120"/>
@@ -40,13 +40,12 @@
         <TextBox x:Name="FS" HorizontalAlignment="Left" Height="23" Margin="726,271,0,0" TextWrapping="Wrap" Text="8000" VerticalAlignment="Top" Width="43"/>
         <TextBox x:Name="GADFS" HorizontalAlignment="Left" Height="23" Margin="774,271,0,0" TextWrapping="Wrap" Text="30" VerticalAlignment="Top" Width="46"/>
         <TextBox x:Name="textBox12" HorizontalAlignment="Left" Height="23" Margin="911,271,0,0" TextWrapping="Wrap" Text="4" VerticalAlignment="Top" Width="36"/>
-        <Label Name="rand" Content="random" HorizontalAlignment="Left" Margin="738,12,0,0" VerticalAlignment="Top" Width="168" HorizontalContentAlignment="Right"/>
         <Button Content="Read" HorizontalAlignment="Left" Margin="831,42,0,0" VerticalAlignment="Top" Width="75" Click="Button_Click_1"/>
         <TextBox Name="SessionID" HorizontalAlignment="Left" Height="23" Margin="706,38,0,0" TextWrapping="Wrap" Text="1a2b3c4d5e01010" VerticalAlignment="Top" Width="120"/>
         <Label Content="SessionID:" HorizontalAlignment="Left" Margin="630,36,0,0" VerticalAlignment="Top" Width="71"/>
         <Button Name="bindb" Content="Bind" HorizontalAlignment="Left" Margin="831,83,0,0" VerticalAlignment="Top" Width="75" Click="Button_Click" IsEnabled="False"/>
         <Button Name="radiate" IsEnabled="False" Content="Radiate" HorizontalAlignment="Left" Margin="246,13,0,0" VerticalAlignment="Top" Width="75" Click="radiate_Click"/>
-        <ListView Name="list" HorizontalAlignment="Left" Height="248" Margin="12,37,0,0" VerticalAlignment="Top" Width="595">
+        <ListView Name="list" HorizontalAlignment="Left" Height="248" Margin="12,37,0,0" VerticalAlignment="Top" Width="595" SelectionChanged="List_SelectionChanged">
             <ListView.View>
                 <GridView>
                     <GridViewColumn Header="Index" Width="80" DisplayMemberBinding="{Binding Path=Index}"/>
@@ -69,7 +68,26 @@
         <Button Name="calib" Content="Calibration" HorizontalAlignment="Left" Height="19" Margin="630,271,0,0" VerticalAlignment="Top" Width="75" Click="calib_Click"/>
         <Label Content="Server IP:" HorizontalAlignment="Left" Margin="696,489,0,0" VerticalAlignment="Top"/>
         <TextBox Name="serverip" HorizontalAlignment="Left" Height="23" Margin="774,489,0,0" TextWrapping="Wrap" Text="192.168.50.222" VerticalAlignment="Top" Width="120"/>
-        <TextBox Name="bindname" HorizontalAlignment="Left" Height="23" Margin="706,79,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="120"/>
+        <TextBox Name="bindname" HorizontalAlignment="Left" Height="23" Margin="748,79,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="78"/>
+        <TextBox Name="group" HorizontalAlignment="Left" Height="23" Margin="831,10,0,0" TextWrapping="Wrap" Text="A" VerticalAlignment="Top" Width="75" TextChanged="Group_TextChanged"/>
+        <Label Content="Group:" HorizontalAlignment="Left" Margin="777,8,0,0" VerticalAlignment="Top"/>
+        <Label Content="ID:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="630,77,0,0" Width="28"/>
+        <Label Name="bindid" Content="" HorizontalAlignment="Left" Margin="661,77,0,0" VerticalAlignment="Top" Width="82"/>
+        <ListView Name="sql_data" HorizontalAlignment="Left" Height="364" Margin="996,35,0,0" VerticalAlignment="Top" Width="256" SelectionChanged="Sql_data_SelectionChanged">
+            <ListView.View>
+                <GridView>
+                    <GridViewColumn Header="Index" Width="50" DisplayMemberBinding="{Binding Path=Index}"/>
+                    <GridViewColumn Header="Board ID" Width="80" DisplayMemberBinding="{Binding Path=ID}"/>
+                    <GridViewColumn Header="Bind" Width="120" DisplayMemberBinding="{Binding Path=Bind}"/>
+                </GridView>
+            </ListView.View>
+        </ListView>
+        <Button Content="Insert" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" Margin="1176,461,0,0" Click="Button_Click_3"/>
+        <Label Content="Delete ID:" HorizontalAlignment="Left" Margin="996,416,0,0" VerticalAlignment="Top" Width="70"/>
+        <Label Name="deleteid" Content="" HorizontalAlignment="Left" Margin="1071,416,0,0" VerticalAlignment="Top" Width="100"/>
+        <Button Content="Delete" HorizontalAlignment="Left" Margin="1176,419,0,0" VerticalAlignment="Top" Width="75" Click="Button_Click_4"/>
+        <Label Name="insert_id" Content="" HorizontalAlignment="Left" Margin="996,455,0,0" VerticalAlignment="Top" Width="70"/>
+        <Label Name="insert_name" Content="" HorizontalAlignment="Left" Margin="1071,455,0,0" VerticalAlignment="Top" Width="100"/>
 
 
 

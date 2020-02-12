@@ -20,6 +20,9 @@ using static RecoderServerApplication.ESP8266.Protocol_Keyword_Function;
 using RecoderServerApplication.MultiThread;
 using System.Timers;
 using System.Diagnostics;
+using System.Data.SQLite;
+using static RecoderServerApplication.MultiThread.SoftUI_Thread;
+using System.Data;
 
 namespace RecoderServerApplication
 {
@@ -31,19 +34,64 @@ namespace RecoderServerApplication
         public MainWindow()
         {
             InitializeComponent();
-            SoftID = SoftRandom.GetRandomString(8, true, false, true, false, "");
-            rand.Content = "ID:" + SoftID;
+            //SoftID = SoftRandom.GetRandomString(8, true, false, true, false, "");
+            //rand.Content = "ID:" + SoftID;
             Radio_Thread.Elapsed += Radio_Thread_Elapsed;
             UIthread.Start_UI_Refresh(this);
+            if (System.IO.File.Exists("device_info.sqlite"))
+            {
+                //存在文件
+                SQLiteConnection cn = new SQLiteConnection("data source=device_info.sqlite");
+                if (cn.State != System.Data.ConnectionState.Open)
+                {
+                    cn.Open();
+                    SQLiteCommand cmd = new SQLiteCommand();
+                    cmd.Connection = cn;
+                    cmd.CommandText = "SELECT * FROM device";
+                    SQLiteDataReader sr = cmd.ExecuteReader();
+                    sql_data.Items.Clear();
+                    int i = 0;
+                    while (sr.Read())
+                    {
+                        //Console.WriteLine($"{sr.GetString(0)} {sr.GetString(1)}");
+                        UI_Trans data2 = new UI_Trans
+                        {
+                            Index = i,
+                            ID = sr.GetString(0),
+                            Bind = sr.GetString(1),
+                        };
+                        sql_data.Items.Add(data2);
+                        i++;
+                    }
+                }
+                cn.Close();
+            }
+            else
+            {
+                //不存在文件
+                SQLiteConnection cn = new SQLiteConnection("data source=device_info.sqlite");
+                if (cn.State != System.Data.ConnectionState.Open)
+                {
+                    cn.Open();
+                    SQLiteCommand cmd = new SQLiteCommand();
+                    cmd.Connection = cn;
+                    cmd.CommandText = "CREATE TABLE " + "Device" + "(ID varchar PRIMARY KEY,Name varchar)";
+                    //cmd.CommandText = "CREATE TABLE IF NOT EXISTS t1(id varchar(4),score int)";
+                    cmd.ExecuteNonQuery();
+                }
+                cn.Close();
+            }
+            //errormessage.ItemsSource = lis.error_message;
             //Process.Start("speex_decoder.exe","D:\\github_project\\AncientProjects\\RadioRecoder\\WPF_Server\\RecoderServerApplication\\RecoderServerApplication\\bin\\Release\\20190623225152_HS6YX83M\\HQOBJSQZ_2019-06-23-22-52-33-000_REC.wzr");
         }
         RecoderServerApplication.MultiThread.SoftUI_Thread UIthread = new SoftUI_Thread();
         string listbox_value;
+        string select_device_id;
         private void Radio_Thread_Elapsed(object sender, ElapsedEventArgs e)
         {
             try
             {
-                lis.Radio_Send_Message(WIFI_Protocol.Construct_Data_Packet(new TransData_Struct(Protocol_Keyword.State_Binding, new byte[] { 0, 0, 0, 0, 0, 0, 0, 0 }, Encoding.ASCII.GetBytes(listbox_value))));
+                lis.Radio_Send_Message(select_device_id, WIFI_Protocol.Construct_Data_Packet(new TransData_Struct(Protocol_Keyword.State_Binding, new byte[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 }, Encoding.ASCII.GetBytes(listbox_value))));
             }
             catch(Exception e2)
             {
@@ -319,6 +367,137 @@ namespace RecoderServerApplication
             //byte[] strdata = Encoding.ASCII.GetBytes(str);
             //int i =WIFI_Protocol.Search_ByteArray_String(ref data,ref strdata);
             //MessageBox.Show(data[i].ToString());
+        }
+
+        private void Group_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            if(group.Text.ToArray().Length > 1)
+            {
+                group.Text = group.Text.ToArray()[0].ToString();
+            }
+            if(group.Text.ToArray().Length == 0)
+            {
+                group.Text = "A";
+            }
+            SoftID = group.Text;
+        }
+
+        private void List_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (list.SelectedItem == null)
+                return;
+            SoftUI_Thread.UI_Trans select = list.SelectedItem as SoftUI_Thread.UI_Trans;
+            if (select != null)
+            {
+                bindid.Content = select.ID;
+                select_device_id = select.ID;
+                insert_id.Content = select.ID;
+                insert_name.Content = select.Bind;
+            }
+        }
+
+        private void Button_Click_3(object sender, RoutedEventArgs e)
+        {
+            if (insert_id.Content == "")
+            {
+                MessageBox.Show("设备ID不可为空！");
+                return;
+            }
+            if(insert_name.Content == "")
+            {
+                MessageBox.Show("绑定名称不可为空！");
+                return;
+            }
+
+           // List<object[]> starsDatas = new List<object[]>();
+            //starsDatas.Add(new object[] { bindid.Content, bindname.Text.Trim(remove).ToString().Trim() });
+
+            SQLiteConnection cn = new SQLiteConnection("data source=device_info.sqlite");
+            if (cn.State != System.Data.ConnectionState.Open)
+            {
+                cn.Open();
+                SQLiteCommand cmd = new SQLiteCommand();
+                cmd.Connection = cn;
+                cmd.CommandText = "INSERT INTO device VALUES('"+ insert_id.Content + "','"+ insert_name.Content + "')";
+                try
+                {
+                    cmd.ExecuteNonQuery();
+                }
+                catch (Exception es)
+                {
+                    cmd.CommandText = "UPDATE device SET Name=@name WHERE ID='"+ insert_id.Content + "'";
+                    cmd.Parameters.Add("name", DbType.String).Value = insert_name.Content;
+                    cmd.ExecuteNonQuery();
+                }
+                cmd.CommandText = "SELECT * FROM device";
+                SQLiteDataReader sr = cmd.ExecuteReader();
+                sql_data.Items.Clear();
+                int i = 0;
+                while (sr.Read())
+                {
+                    //Console.WriteLine($"{sr.GetString(0)} {sr.GetString(1)}");
+                    UI_Trans data2 = new UI_Trans
+                    {
+                        Index = i,
+                        ID = sr.GetString(0),
+                        Bind = sr.GetString(1),
+                    };
+                    sql_data.Items.Add(data2);
+                    i++;
+                }
+            }
+            cn.Close();
+        }
+
+        private void Sql_data_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (sql_data.SelectedItem == null)
+                return;
+            SoftUI_Thread.UI_Trans select = sql_data.SelectedItem as SoftUI_Thread.UI_Trans;
+            if (select != null)
+            {
+                deleteid.Content = select.ID;
+            }
+        }
+
+        private void Button_Click_4(object sender, RoutedEventArgs e)
+        {
+            if (deleteid.Content == "")
+            {
+                MessageBox.Show("设备ID不可为空！");
+                return;
+            }
+
+
+            SQLiteConnection cn = new SQLiteConnection("data source=device_info.sqlite");
+            if (cn.State != System.Data.ConnectionState.Open)
+            {
+                cn.Open();
+                SQLiteCommand cmd = new SQLiteCommand();
+                cmd.Connection = cn;
+                cmd.CommandText = "DELETE FROM device WHERE ID='"+ deleteid.Content + "'";
+                cmd.ExecuteNonQuery();
+                cmd.Connection = cn;
+                cmd.CommandText = "SELECT * FROM device";
+                SQLiteDataReader sr = cmd.ExecuteReader();
+                sql_data.Items.Clear();
+                int i = 0;
+                while (sr.Read())
+                {
+                    //Console.WriteLine($"{sr.GetString(0)} {sr.GetString(1)}");
+                    UI_Trans data2 = new UI_Trans
+                    {
+                        Index = i,
+                        ID = sr.GetString(0),
+                        Bind = sr.GetString(1),
+                    };
+                    sql_data.Items.Add(data2);
+                    i++;
+                }
+            }
+            cn.Close();
+
+            
         }
     }
 }

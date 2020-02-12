@@ -67,11 +67,13 @@ namespace RecoderServerApplication.ESP8266
         public class State_Idle_refData
         {
             public byte State;
+            public string Binding_User;
         }
         private static object State_Idle(TransData_Struct data)
         {
             State_Idle_refData recv = new State_Idle_refData();
             recv.State = data.Data[0];
+            recv.Binding_User = Encoding.ASCII.GetString(data.Data.Skip(1).ToArray());
             return recv;
         }
         public class State_Binding_refData
@@ -90,7 +92,10 @@ namespace RecoderServerApplication.ESP8266
         private static object State_Bingding_Check(TransData_Struct data)
         {
             State_Bingding_Check_refData recv = new State_Bingding_Check_refData();
-            recv.Binding_User = Encoding.ASCII.GetString(data.Data);
+            if (data.Data == null)
+                recv.Binding_User = "";
+            else
+                recv.Binding_User = Encoding.ASCII.GetString(data.Data);
             return recv;
 
         }

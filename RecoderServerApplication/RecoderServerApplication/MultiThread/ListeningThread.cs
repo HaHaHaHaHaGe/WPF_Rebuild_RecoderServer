@@ -48,7 +48,7 @@ namespace RecoderServerApplication.MultiThread
                     int recv_len = 0;
                     try
                     {
-                        byte[] send = WIFI_Protocol.Construct_Data_Packet(new Protocol_Keyword_Function.TransData_Struct(Protocol_Keyword_Function.Protocol_Keyword.State_DeviceInfo,new byte[] {0,0,0,0,0,0,0,0 },new byte[] { }));
+                        byte[] send = WIFI_Protocol.Construct_Data_Packet(new Protocol_Keyword_Function.TransData_Struct(Protocol_Keyword_Function.Protocol_Keyword.State_DeviceInfo,new byte[] {0,0,0,0,0,0,0,0,0,0,0,0 },new byte[] { }));
                         sendTimes++;
                         socket.Send(send);
                         
@@ -58,7 +58,7 @@ namespace RecoderServerApplication.MultiThread
                     catch(Exception e)
                     {
                         error_message.Add(e.Message);
-                        if (sendTimes == 5)
+                        if (sendTimes > 5)
                         {
                             socket.Close();
                             break;

@@ -103,14 +103,14 @@ namespace RecoderServerApplication.ESP8266
                         int recvsum = 0;
                         for (int k = 0; k < search_list[i].Length; k++)
                             recvsum += search_list[i][k];
-                        if (recvdatalen > 1024 * 20 || (commLoc + search_list[i].Length + 4 + 4 + recvdatalen + 8) >= srcdata.Length)
+                        if (recvdatalen > 1024 * 20 || (commLoc + search_list[i].Length + 4 + 4 + recvdatalen + 12) >= srcdata.Length)
                         {
                             for (int k = 0; k < search_list[i].Length; k++)
                                 srcdata[commLoc + k] = 0;
                             break;
                         }
 
-                        for (int k = 0; k < recvdatalen + 8; k++)
+                        for (int k = 0; k < recvdatalen + 12; k++)
                             recvsum += srcdata[commLoc + search_list[i].Length + 4 + 4 + k];
                         if (recvsum == recvdatacheck)
                         {

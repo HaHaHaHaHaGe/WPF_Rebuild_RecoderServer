@@ -143,3 +143,6 @@ C:\Users\Administrator\Desktop\github_code\WPF_Rebuild_RecoderServer\RecoderServ
 C:\Users\Administrator\Desktop\github_code\WPF_Rebuild_RecoderServer\RecoderServerApplication\RecoderServerApplication\bin\Debug\System.Data.SQLite.xml
 C:\Users\Administrator\Desktop\github_code\WPF_Rebuild_RecoderServer\RecoderServerApplication\RecoderServerApplication\bin\Debug\System.Data.SQLite.dll.config
 C:\Users\Administrator\Desktop\github_code\WPF_Rebuild_RecoderServer\RecoderServerApplication\RecoderServerApplication\obj\Debug\RecoderServerApplication.csproj.CopyComplete
+C:\Users\Administrator\Desktop\github_code\WPF_Rebuild_RecoderServer\RecoderServerApplication\RecoderServerApplication\bin\Debug\x86\sqlite3.dll
+C:\Users\Administrator\Desktop\github_code\WPF_Rebuild_RecoderServer\RecoderServerApplication\RecoderServerApplication\bin\Debug\x64\sqlite3.dll
+C:\Users\Administrator\Desktop\github_code\WPF_Rebuild_RecoderServer\RecoderServerApplication\RecoderServerApplication\obj\Debug\RecoderServerApplication_Content.g.cs

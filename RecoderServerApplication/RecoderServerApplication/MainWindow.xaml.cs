@@ -57,11 +57,13 @@ namespace RecoderServerApplication
         RecoderServerApplication.MultiThread.SoftUI_Thread UIthread = new SoftUI_Thread();
         string listbox_value;
         string select_device_id;
+        Encoding gb2312 = Encoding.GetEncoding("gb2312");
         private void Radio_Thread_Elapsed(object sender, ElapsedEventArgs e)
         {
             try
             {
-                lis.Radio_Send_Message(select_device_id, WIFI_Protocol.Construct_Data_Packet(new TransData_Struct(Protocol_Keyword.State_Binding, new byte[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 }, Encoding.UTF8.GetBytes(listbox_value))));
+                
+                lis.Radio_Send_Message(select_device_id, WIFI_Protocol.Construct_Data_Packet(new TransData_Struct(Protocol_Keyword.State_Binding, new byte[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 }, gb2312.GetBytes(listbox_value)))); 
             }
             catch(Exception e2)
             {
@@ -478,7 +480,7 @@ namespace RecoderServerApplication
                         }
                         else
                         {
-                            lis.Radio_Send_Message(RadioQueue[0].id, WIFI_Protocol.Construct_Data_Packet(new TransData_Struct(Protocol_Keyword.State_Binding, new byte[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 }, Encoding.UTF8.GetBytes(RadioQueue[0].nickname))));
+                            lis.Radio_Send_Message(RadioQueue[0].id, WIFI_Protocol.Construct_Data_Packet(new TransData_Struct(Protocol_Keyword.State_Binding, new byte[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 }, gb2312.GetBytes(RadioQueue[0].nickname))));
 
                         }
                     }

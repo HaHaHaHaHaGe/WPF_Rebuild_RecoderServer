@@ -8,6 +8,7 @@ namespace RecoderServerApplication.ESP8266
 {
     class Protocol_Keyword_Function
     {
+        static Encoding gb2312 = Encoding.GetEncoding("gb2312");
         public class TransData_Struct
         {
             public TransData_Struct(Protocol_Keyword Keyword_, byte[] Device_ID_, byte[] Data_)
@@ -73,7 +74,7 @@ namespace RecoderServerApplication.ESP8266
         {
             State_Idle_refData recv = new State_Idle_refData();
             recv.State = data.Data[0];
-            recv.Binding_User = Encoding.UTF8.GetString(data.Data.Skip(1).ToArray());
+            recv.Binding_User = gb2312.GetString(data.Data.Skip(1).ToArray());
             return recv;
         }
         public class State_Binding_refData
@@ -95,7 +96,7 @@ namespace RecoderServerApplication.ESP8266
             if (data.Data == null)
                 recv.Binding_User = "";
             else
-                recv.Binding_User = Encoding.UTF8.GetString(data.Data);
+                recv.Binding_User = gb2312.GetString(data.Data);
             return recv;
 
         }

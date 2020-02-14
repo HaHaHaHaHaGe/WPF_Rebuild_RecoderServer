@@ -23,6 +23,7 @@ using System.Diagnostics;
 using System.Data.SQLite;
 using static RecoderServerApplication.MultiThread.SoftUI_Thread;
 using System.Data;
+using RecoderServerApplication.SQLite;
 
 namespace RecoderServerApplication
 {
@@ -37,53 +38,22 @@ namespace RecoderServerApplication
             //SoftID = SoftRandom.GetRandomString(8, true, false, true, false, "");
             //rand.Content = "ID:" + SoftID;
             Radio_Thread.Elapsed += Radio_Thread_Elapsed;
+            Radio_ALLDevice_NickName_Thread.Elapsed += Radio_ALLDevice_NickName_Thread_Elapsed;
+            Radio_ALLDevice_NickName_Thread.Start();
             UIthread.Start_UI_Refresh(this);
-            if (System.IO.File.Exists("device_info.sqlite"))
+            SQLite_RW.Initial_SQLite("database");
+            List<SQLite_DataStruct> recv =  SQLite_RW.GetData();
+            sql_data.Items.Clear();
+            for (int i = 0; i<recv.Count;i++)
             {
-                //存在文件
-                SQLiteConnection cn = new SQLiteConnection("data source=device_info.sqlite");
-                if (cn.State != System.Data.ConnectionState.Open)
-                {
-                    cn.Open();
-                    SQLiteCommand cmd = new SQLiteCommand();
-                    cmd.Connection = cn;
-                    cmd.CommandText = "SELECT * FROM device";
-                    SQLiteDataReader sr = cmd.ExecuteReader();
-                    sql_data.Items.Clear();
-                    int i = 0;
-                    while (sr.Read())
-                    {
-                        //Console.WriteLine($"{sr.GetString(0)} {sr.GetString(1)}");
-                        UI_Trans data2 = new UI_Trans
-                        {
-                            Index = i,
-                            ID = sr.GetString(0),
-                            Bind = sr.GetString(1),
-                        };
-                        sql_data.Items.Add(data2);
-                        i++;
-                    }
-                }
-                cn.Close();
-            }
-            else
-            {
-                //不存在文件
-                SQLiteConnection cn = new SQLiteConnection("data source=device_info.sqlite");
-                if (cn.State != System.Data.ConnectionState.Open)
-                {
-                    cn.Open();
-                    SQLiteCommand cmd = new SQLiteCommand();
-                    cmd.Connection = cn;
-                    cmd.CommandText = "CREATE TABLE " + "Device" + "(ID varchar PRIMARY KEY,Name varchar)";
-                    //cmd.CommandText = "CREATE TABLE IF NOT EXISTS t1(id varchar(4),score int)";
-                    cmd.ExecuteNonQuery();
-                }
-                cn.Close();
+                sql_data.Items.Add(recv[i]);
             }
             //errormessage.ItemsSource = lis.error_message;
             //Process.Start("speex_decoder.exe","D:\\github_project\\AncientProjects\\RadioRecoder\\WPF_Server\\RecoderServerApplication\\RecoderServerApplication\\bin\\Release\\20190623225152_HS6YX83M\\HQOBJSQZ_2019-06-23-22-52-33-000_REC.wzr");
         }
+
+
+
         RecoderServerApplication.MultiThread.SoftUI_Thread UIthread = new SoftUI_Thread();
         string listbox_value;
         string select_device_id;
@@ -91,7 +61,7 @@ namespace RecoderServerApplication
         {
             try
             {
-                lis.Radio_Send_Message(select_device_id, WIFI_Protocol.Construct_Data_Packet(new TransData_Struct(Protocol_Keyword.State_Binding, new byte[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 }, Encoding.ASCII.GetBytes(listbox_value))));
+                lis.Radio_Send_Message(select_device_id, WIFI_Protocol.Construct_Data_Packet(new TransData_Struct(Protocol_Keyword.State_Binding, new byte[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 }, Encoding.UTF8.GetBytes(listbox_value))));
             }
             catch(Exception e2)
             {
@@ -409,54 +379,27 @@ namespace RecoderServerApplication
                 return;
             }
 
-           // List<object[]> starsDatas = new List<object[]>();
+            // List<object[]> starsDatas = new List<object[]>();
             //starsDatas.Add(new object[] { bindid.Content, bindname.Text.Trim(remove).ToString().Trim() });
 
-            SQLiteConnection cn = new SQLiteConnection("data source=device_info.sqlite");
-            if (cn.State != System.Data.ConnectionState.Open)
+
+            SQLite_RW.SetData(new SQLite_DataStruct { DeviceID = insert_id.Content.ToString(), NickName = insert_name.Content.ToString() });
+            List<SQLite_DataStruct> recv = SQLite_RW.GetData();
+            sql_data.Items.Clear();
+            for (int i = 0; i < recv.Count; i++)
             {
-                cn.Open();
-                SQLiteCommand cmd = new SQLiteCommand();
-                cmd.Connection = cn;
-                cmd.CommandText = "INSERT INTO device VALUES('"+ insert_id.Content + "','"+ insert_name.Content + "')";
-                try
-                {
-                    cmd.ExecuteNonQuery();
-                }
-                catch (Exception es)
-                {
-                    cmd.CommandText = "UPDATE device SET Name=@name WHERE ID='"+ insert_id.Content + "'";
-                    cmd.Parameters.Add("name", DbType.String).Value = insert_name.Content;
-                    cmd.ExecuteNonQuery();
-                }
-                cmd.CommandText = "SELECT * FROM device";
-                SQLiteDataReader sr = cmd.ExecuteReader();
-                sql_data.Items.Clear();
-                int i = 0;
-                while (sr.Read())
-                {
-                    //Console.WriteLine($"{sr.GetString(0)} {sr.GetString(1)}");
-                    UI_Trans data2 = new UI_Trans
-                    {
-                        Index = i,
-                        ID = sr.GetString(0),
-                        Bind = sr.GetString(1),
-                    };
-                    sql_data.Items.Add(data2);
-                    i++;
-                }
+                sql_data.Items.Add(recv[i]);
             }
-            cn.Close();
         }
 
         private void Sql_data_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (sql_data.SelectedItem == null)
                 return;
-            SoftUI_Thread.UI_Trans select = sql_data.SelectedItem as SoftUI_Thread.UI_Trans;
+            SQLite_DataStruct select = sql_data.SelectedItem as SQLite_DataStruct;
             if (select != null)
             {
-                deleteid.Content = select.ID;
+                deleteid.Content = select.DeviceID;
             }
         }
 
@@ -469,35 +412,79 @@ namespace RecoderServerApplication
             }
 
 
-            SQLiteConnection cn = new SQLiteConnection("data source=device_info.sqlite");
-            if (cn.State != System.Data.ConnectionState.Open)
+            SQLite_RW.DeleteData(new SQLite_DataStruct { DeviceID = deleteid.Content.ToString() });
+            List<SQLite_DataStruct> recv = SQLite_RW.GetData();
+            sql_data.Items.Clear();
+            for (int i = 0; i < recv.Count; i++)
             {
-                cn.Open();
-                SQLiteCommand cmd = new SQLiteCommand();
-                cmd.Connection = cn;
-                cmd.CommandText = "DELETE FROM device WHERE ID='"+ deleteid.Content + "'";
-                cmd.ExecuteNonQuery();
-                cmd.Connection = cn;
-                cmd.CommandText = "SELECT * FROM device";
-                SQLiteDataReader sr = cmd.ExecuteReader();
-                sql_data.Items.Clear();
-                int i = 0;
-                while (sr.Read())
+                sql_data.Items.Add(recv[i]);
+            }
+
+        }
+
+        private void Button_Click_5(object sender, RoutedEventArgs e)
+        {
+            for (int i = 0; i < ListeningThread.DeviceList_Thread.Count; i++)
+            {
+                string ID = ListeningThread.DeviceList_Thread[i].Device_Recv_Struct.Device_ID;
+                string Nickname = ListeningThread.DeviceList_Thread[i].Device_Recv_Struct.Bind_User;
+                SQLite_RW.SetData(new SQLite_DataStruct { DeviceID = ID, NickName = Nickname });
+            }
+            List<SQLite_DataStruct> recv = SQLite_RW.GetData();
+            sql_data.Items.Clear();
+            for (int i = 0; i < recv.Count; i++)
+            {
+                sql_data.Items.Add(recv[i]);
+            }
+        }
+        Timer Radio_ALLDevice_NickName_Thread = new Timer(100);
+        public class RadioQueueClass
+        {
+            public string id;
+            public string nickname;
+        }
+        List<RadioQueueClass> RadioQueue = new List<RadioQueueClass>();
+        private void Button_Click_6(object sender, RoutedEventArgs e)
+        {
+            for (int i = 0; i < ListeningThread.DeviceList_Thread.Count; i++)
+            {
+                string rfID = ListeningThread.DeviceList_Thread[i].Device_Recv_Struct.Device_ID;
+                string rfNickname = ListeningThread.DeviceList_Thread[i].Device_Recv_Struct.Bind_User;
+                for (int j = 0; j < SQLite_RW.SqlData.Count; j++)
                 {
-                    //Console.WriteLine($"{sr.GetString(0)} {sr.GetString(1)}");
-                    UI_Trans data2 = new UI_Trans
+                    string serID = SQLite_RW.SqlData[j].DeviceID;
+                    string serNickname = SQLite_RW.SqlData[j].NickName;
+                    if (rfID == serID && rfNickname != serNickname)
                     {
-                        Index = i,
-                        ID = sr.GetString(0),
-                        Bind = sr.GetString(1),
-                    };
-                    sql_data.Items.Add(data2);
-                    i++;
+                        RadioQueue.Add(new RadioQueueClass { id = rfID, nickname = serNickname });
+                    }
                 }
             }
-            cn.Close();
+        }
+        private void Radio_ALLDevice_NickName_Thread_Elapsed(object sender, ElapsedEventArgs e)
+        {
+            if(RadioQueue.Count > 0)
+            {
+                for (int i = 0; i < ListeningThread.DeviceList_Thread.Count; i++)
+                {
+                    string rfID = ListeningThread.DeviceList_Thread[i].Device_Recv_Struct.Device_ID;
+                    string rfNickname = ListeningThread.DeviceList_Thread[i].Device_Recv_Struct.Bind_User;
+                    if (RadioQueue[0].id == rfID)
+                    {
+                        if(RadioQueue[0].nickname == rfNickname)
+                        {
+                            RadioQueue.RemoveAt(0);
+                            return;
+                        }
+                        else
+                        {
+                            lis.Radio_Send_Message(RadioQueue[0].id, WIFI_Protocol.Construct_Data_Packet(new TransData_Struct(Protocol_Keyword.State_Binding, new byte[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 }, Encoding.UTF8.GetBytes(RadioQueue[0].nickname))));
 
-            
+                        }
+                    }
+                }
+            }
+            //throw new NotImplementedException();
         }
     }
 }

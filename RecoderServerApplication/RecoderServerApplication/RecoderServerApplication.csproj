@@ -82,6 +82,9 @@
     <Compile Include="MultiThread\ListeningThread.cs" />
     <Compile Include="MultiThread\ServiceThread.cs" />
     <Compile Include="MultiThread\SoftUI_Thread.cs" />
+    <Compile Include="HttpPost\httppost.cs" />
+    <Compile Include="SQLite\SQLite_DataStruct.cs" />
+    <Compile Include="SQLite\SQLite_RW.cs" />
     <Compile Include="WAVData\SrcDataCutApart.cs" />
     <Compile Include="WAVData\Speex_Creater.cs" />
     <Compile Include="RF24L01\ComPort.cs" />

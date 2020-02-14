@@ -115,10 +115,10 @@ namespace RecoderServerApplication.MultiThread
                 {
                     object recv = State_Response_Function(item);
 
-                    //State_DeviceInfo_refData info = recv as State_DeviceInfo_refData;
-                    //State_ReadyToStartRecoder_refData ready = recv as State_ReadyToStartRecoder_refData;
-                    //State_TransData_refData tdata = recv as State_TransData_refData;
-                    //State_TransRepairData_refData rdata = recv as State_TransRepairData_refData;
+                    //State_DeviceInfo_refData info = SqlData as State_DeviceInfo_refData;
+                    //State_ReadyToStartRecoder_refData ready = SqlData as State_ReadyToStartRecoder_refData;
+                    //State_TransData_refData tdata = SqlData as State_TransData_refData;
+                    //State_TransRepairData_refData rdata = SqlData as State_TransRepairData_refData;
 
                         //Device_Recv_Struct.Device_ID = Encoding.ASCII.GetString(item.Device_ID);
 

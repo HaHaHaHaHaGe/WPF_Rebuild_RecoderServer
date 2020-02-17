@@ -24,6 +24,7 @@ using System.Data.SQLite;
 using static RecoderServerApplication.MultiThread.SoftUI_Thread;
 using System.Data;
 using RecoderServerApplication.SQLite;
+using RecoderServerApplication.HttpPost;
 
 namespace RecoderServerApplication
 {
@@ -487,6 +488,209 @@ namespace RecoderServerApplication
                 }
             }
             //throw new NotImplementedException();
+        }
+        bool islogin = false;
+        private void Button_Click_7(object sender, RoutedEventArgs e)
+        {
+            HttpPost.json.LoginJsonResultStruct data;
+            bool flag = false;
+            if (islogin)
+            {
+                try
+                {
+                    string recv = httppost.HttpPost(" https://classroom.talkingbrain.com.cn/index.php/home/api/login_out", "user_token=" + HttpPost.json.recv.user_token, ref flag);
+                    data = HttpPost.json.LogoutJsonResult(recv);
+                }
+                catch (Exception es)
+                {
+                    MessageBox.Show("链接错误！");
+                    return;
+                }
+
+                if (data.flag == false)
+                {
+                    MessageBox.Show(data.message);
+                    return;
+                }
+                MessageBox.Show(data.message);
+                server_data.Items.Clear();
+                login.Content = "Login";
+                sn.IsEnabled = true;
+            }
+            else
+            {
+                
+                // string recv = httppost.GetResponseString(httppost.CreatePostHttpResponse("https://classroom.talkingbrain.com.cn/index.php/home/api/login_in", new Dictionary<string, string> { { "password", sn.Text } }));
+                try
+                {
+                    string recv = httppost.HttpPost("https://classroom.talkingbrain.com.cn/index.php/home/api/login_in", "password=" + sn.Text, ref flag);
+                    data = HttpPost.json.LoginJsonResult(recv);
+                }
+                catch(Exception es)
+                {
+                    MessageBox.Show("链接错误！");
+                    return;
+                }
+
+                if (data.flag == false)
+                {
+                    MessageBox.Show(data.message);
+                    return;
+                }
+                MessageBox.Show(data.message);
+                server_data.Items.Clear();
+                for (int i = 0; i < data.users.Count; i++)
+                {
+                    data.users[i].index = i;
+                    server_data.Items.Add(data.users[i]);
+                }
+                sn.IsEnabled = false;
+                login.Content = "Logout";
+
+            }
+            islogin = !islogin;
+        }
+
+        private void Button_Click_8(object sender, RoutedEventArgs e)
+        {
+            HttpPost.json.LoginJsonResultStruct data;
+            bool flag = false;
+            try
+            {
+                string recv = httppost.HttpPost("https://classroom.talkingbrain.com.cn/index.php/home/api/get_user", "user_token=" + HttpPost.json.recv.user_token, ref flag);
+                data = HttpPost.json.RefreshJsonResult(recv);
+            }
+            catch (Exception es)
+            {
+                MessageBox.Show("链接错误！");
+                return;
+            }
+            if (data.flag == false)
+            {
+                MessageBox.Show(data.message);
+                return;
+            }
+            server_data.Items.Clear();
+            for (int i = 0; i < data.users.Count; i++)
+            {
+                data.users[i].index = i;
+                server_data.Items.Add(data.users[i]);
+            }
+        }
+
+        private void Button_Click_9(object sender, RoutedEventArgs e)
+        {
+            HttpPost.json.LoginJsonResultStruct data;
+            bool flag = false;
+            try
+            {
+                string recv = httppost.GetResponseString(httppost.CreatePostHttpResponse("https://classroom.talkingbrain.com.cn/index.php/home/api/create_user", new Dictionary<string, string> { { "user_token", HttpPost.json.recv.user_token },{ "nickname", nkname.Text },{"gender", gender.Text },{ "age", age.Text } }));
+                data = HttpPost.json.InsertJsonResult(recv);
+            }
+            catch (Exception es)
+            {
+                MessageBox.Show("链接错误！");
+                return;
+            }
+            if (data.flag == false)
+            {
+                MessageBox.Show(data.message);
+                return;
+            }
+
+
+
+
+            string recv2 = httppost.HttpPost("https://classroom.talkingbrain.com.cn/index.php/home/api/get_user", "user_token=" + HttpPost.json.recv.user_token, ref flag);
+            data = HttpPost.json.RefreshJsonResult(recv2);
+            server_data.Items.Clear();
+            for (int i = 0; i < data.users.Count; i++)
+            {
+                data.users[i].index = i;
+                server_data.Items.Add(data.users[i]);
+            }
+        }
+
+        private void Button_Click_10(object sender, RoutedEventArgs e)
+        {
+            HttpPost.json.LoginJsonResultStruct data;
+            bool flag = false;
+
+            try
+            {
+                string recv = httppost.HttpPost(" https://classroom.talkingbrain.com.cn/index.php/home/api/end", "user_token=" + HttpPost.json.recv.user_token, ref flag);
+                data = HttpPost.json.LogoutJsonResult(recv);
+            }
+            catch (Exception es)
+            {
+                MessageBox.Show("链接错误！");
+                return;
+            }
+
+            if (data.flag == false)
+            {
+                MessageBox.Show(data.message);
+                return;
+            }
+            MessageBox.Show(data.message);
+            login.Content = "Login";
+            sn.IsEnabled = true;
+        }
+
+        private void Button_Click_11(object sender, RoutedEventArgs e)
+        {
+            List<SQLite_DataStruct> recv = SQLite_RW.GetData();
+            List<string> offline = new List<string>();
+            int k = 0;
+            for (int i = 0; i < ListeningThread.DeviceList_Thread.Count; i++)
+            {
+                string ID = ListeningThread.DeviceList_Thread[i].Device_Recv_Struct.Device_ID;
+                for(int j = 0; j < recv.Count; j++)
+                {
+
+                    if(ID == recv[j].DeviceID)
+                    {
+                        if (json.recv.users.Count > k)
+                        {
+                            SQLite_RW.SetData(new SQLite_DataStruct { DeviceID = ID, NickName = json.recv.users[k].nickname, UserID = json.recv.users[k].user_id });
+                            k++;
+                        }
+                        break;
+                    }
+                }
+            }
+
+            for (int i = 0; i < recv.Count; i++)
+            {
+                bool flag = false;
+                for (int j = 0; j < ListeningThread.DeviceList_Thread.Count; j++)
+                {
+                    string ID = ListeningThread.DeviceList_Thread[j].Device_Recv_Struct.Device_ID;
+                    if (ID == recv[i].DeviceID)
+                    {
+                        flag = true;
+                        break;
+                    }
+                }
+                if (flag == false)
+                    offline.Add(recv[i].DeviceID);
+            }
+
+            for (int i = 0; i < offline.Count; i++)
+            {
+                if (json.recv.users.Count > k)
+                {
+                    SQLite_RW.SetData(new SQLite_DataStruct { DeviceID = offline[i], NickName = json.recv.users[k].nickname, UserID = json.recv.users[k].user_id });
+                    k++;
+                }
+            }
+
+            recv = SQLite_RW.GetData();
+            sql_data.Items.Clear();
+            for (int i = 0; i < recv.Count; i++)
+            {
+                sql_data.Items.Add(recv[i]);
+            }
         }
     }
 }

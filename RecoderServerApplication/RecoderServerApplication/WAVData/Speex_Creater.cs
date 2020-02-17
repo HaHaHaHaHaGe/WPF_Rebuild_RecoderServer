@@ -1,4 +1,5 @@
-﻿using System;
+﻿using RecoderServerApplication.MultiThread;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -195,6 +196,7 @@ namespace RecoderServerApplication.WAVData
             bin.Close();
             file.Close();
             Process.Start("speex_decoder.exe" ,filedir);
+            UploadThread.EnqueuelTask(new UploadThread.UploadFiles { filename = System.IO.Path.GetFileName(filedir),filepath = System.IO.Path.GetDirectoryName(filedir) });
             wavdata = null;
             Deformity_Data = null;
             bin = null;

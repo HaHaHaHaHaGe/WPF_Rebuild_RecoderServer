@@ -93,20 +93,27 @@
         <ListView Name="server_data" HorizontalAlignment="Left" Height="364" Margin="1333,35,0,0" VerticalAlignment="Top" Width="256" SelectionChanged="Sql_data_SelectionChanged">
             <ListView.View>
                 <GridView>
-                    <GridViewColumn Header="Index" Width="50" DisplayMemberBinding="{Binding Index}"/>
-                    <GridViewColumn Header="User ID" Width="80" DisplayMemberBinding="{Binding UserID}"/>
-                    <GridViewColumn Header="Nick Name" Width="120" DisplayMemberBinding="{Binding NickName}"/>
+                    <GridViewColumn Header="Index" Width="50" DisplayMemberBinding="{Binding index}"/>
+                    <GridViewColumn Header="User ID" Width="80" DisplayMemberBinding="{Binding user_id}"/>
+                    <GridViewColumn Header="Nick Name" Width="120" DisplayMemberBinding="{Binding nickname}"/>
                 </GridView>
             </ListView.View>
         </ListView>
-        <Button Content="Login" HorizontalAlignment="Left" Margin="1514,419,0,0" VerticalAlignment="Top" Width="75"/>
-        <Button Content="Refresh" HorizontalAlignment="Left" Margin="1514,461,0,0" VerticalAlignment="Top" Width="75"/>
-        <Button Content="Insert" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" Margin="1514,500,0,0"/>
-        <Button Content="&lt;&lt;" HorizontalAlignment="Left" VerticalAlignment="Top" Width="53" Margin="1266,131,0,0" Height="48" Click="Button_Click_5"/>
+        <Button Name="login" Content="Login" HorizontalAlignment="Left" Margin="1514,419,0,0" VerticalAlignment="Top" Width="75" Click="Button_Click_7"/>
+        <Button Content="Refresh" HorizontalAlignment="Left" Margin="1514,461,0,0" VerticalAlignment="Top" Width="75" Click="Button_Click_8"/>
+        <Button Content="Insert" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" Margin="1514,533,0,0" Click="Button_Click_9"/>
+        <Button Content="&lt;&lt;" HorizontalAlignment="Left" VerticalAlignment="Top" Width="53" Margin="1266,131,0,0" Height="48" Click="Button_Click_11"/>
         <Label Content="SQLite" HorizontalAlignment="Left" Margin="1099,8,0,0" VerticalAlignment="Top"/>
         <Label Content="Server" HorizontalAlignment="Left" Margin="1442,8,0,0" VerticalAlignment="Top"/>
-        <Label x:Name="insert_name_Copy" Content="" HorizontalAlignment="Left" Margin="1388,494,0,0" VerticalAlignment="Top" Width="100"/>
+        <Label x:Name="insert_name_Copy" Content="NickName:" HorizontalAlignment="Left" Margin="1333,493,0,0" VerticalAlignment="Top" Width="72"/>
         <Button Content="&gt;&gt;" HorizontalAlignment="Left" VerticalAlignment="Top" Width="53" Margin="926,178,0,0" Height="48" Click="Button_Click_5"/>
+        <TextBox Name="sn" HorizontalAlignment="Left" Height="23" Margin="1333,416,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="175"/>
+        <TextBox Name="nkname" HorizontalAlignment="Left" Height="23" Margin="1410,495,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="179"/>
+        <Label Content="Gender:" HorizontalAlignment="Left" Margin="1333,530,0,0" VerticalAlignment="Top"/>
+        <TextBox Name="gender" HorizontalAlignment="Left" Height="23" Margin="1393,532,0,0" TextWrapping="Wrap" Text="男" VerticalAlignment="Top" Width="22"/>
+        <Label Content="Age:" HorizontalAlignment="Left" Margin="1420,530,0,0" VerticalAlignment="Top"/>
+        <TextBox Name="age" HorizontalAlignment="Left" Height="23" Margin="1461,532,0,0" TextWrapping="Wrap" Text="18" VerticalAlignment="Top" Width="32" RenderTransformOrigin="0.517,-0.348"/>
+        <Button Content="End" HorizontalAlignment="Left" Margin="1333,461,0,0" VerticalAlignment="Top" Width="75" Click="Button_Click_10"/>
 
 
 

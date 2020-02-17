@@ -1,4 +1,5 @@
-﻿using RecoderServerApplication.WAVData;
+﻿using RecoderServerApplication.SQLite;
+using RecoderServerApplication.WAVData;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -164,7 +165,17 @@ namespace RecoderServerApplication.MultiThread
                         {
                             // Directory.CreateDirectory(Dir +"\\"+ Device_Recv_Struct.Device_ID);
                             Directory.CreateDirectory(Dir);
-                            WavCreate = new SrcDataCutApart(Fre, Sec, Dir + "\\" + Device_Recv_Struct.Device_ID + "_");
+                            string userid = "";
+                            List<SQLite_DataStruct> sqldata = SQLite_RW.GetData();
+                            for (int i = 0; i< sqldata.Count;i++)
+                            {
+                                if(sqldata[i].DeviceID == Device_Recv_Struct.Device_ID)
+                                {
+                                    userid = sqldata[i].UserID;
+                                    break;
+                                }
+                            }
+                            WavCreate = new SrcDataCutApart(Fre, Sec, Dir + "\\" + userid + "_" + Device_Recv_Struct.Device_ID + "_");
                         }
                     }
                     if(recv is State_TransData_refData trans_refdata)

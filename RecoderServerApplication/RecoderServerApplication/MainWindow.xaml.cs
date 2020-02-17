@@ -38,6 +38,7 @@ namespace RecoderServerApplication
             InitializeComponent();
             //SoftID = SoftRandom.GetRandomString(8, true, false, true, false, "");
             //rand.Content = "ID:" + SoftID;
+            //MessageBox.Show(System.AppDomain.CurrentDomain.BaseDirectory);
             Radio_Thread.Elapsed += Radio_Thread_Elapsed;
             Radio_ALLDevice_NickName_Thread.Elapsed += Radio_ALLDevice_NickName_Thread_Elapsed;
             Radio_ALLDevice_NickName_Thread.Start();
@@ -54,7 +55,7 @@ namespace RecoderServerApplication
         }
 
 
-
+        UploadThread upt = new UploadThread();
         RecoderServerApplication.MultiThread.SoftUI_Thread UIthread = new SoftUI_Thread();
         string listbox_value;
         string select_device_id;

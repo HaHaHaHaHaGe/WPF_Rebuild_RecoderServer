@@ -50,10 +50,13 @@ namespace RecoderServerApplication.MultiThread
                     bool recv =  httppost.uploadfile(title.filepath, title.filename);
                     if (recv == false)
                         EnqueuelTask(title);
+                    else
+                        title.filename = null;
                 }
                 else
                 {
-                    _wh.WaitOne();
+                    //_wh.WaitOne();
+                    Thread.Sleep(1000);
                 }
             }
         }

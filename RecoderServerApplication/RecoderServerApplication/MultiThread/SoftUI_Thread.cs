@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -29,18 +28,12 @@ namespace RecoderServerApplication.MultiThread
             public string ID { get; set; }
             public string Bind { get; set; }
         }
-        BindingList<ServerListUI> listServerListUI = new BindingList<ServerListUI>();
-        BindingList<UI_Trans> listUI_Trans = new BindingList<UI_Trans>();
         public void Start_UI_Refresh(MainWindow w)
         {
             main = w;
             Refresh_Thread = new Thread(Refresh_Thread_Function);
             Refresh_Thread.Start();
             Refresh_Thread.IsBackground = true;
-            main.listView.Items.Clear();
-            main.list.Items.Clear();
-            main.listView.ItemsSource = listServerListUI;
-            main.list.ItemsSource = listUI_Trans;
         }
         void Refresh_Thread_Function()
         {
@@ -51,10 +44,8 @@ namespace RecoderServerApplication.MultiThread
             {
                 main.Dispatcher.Invoke(() =>
                 {
-                    //main.listView.Items.Clear();
-                    //main.list.Items.Clear();
-                    listServerListUI.Clear();
-                    listUI_Trans.Clear();
+                    main.listView.Items.Clear();
+                    main.list.Items.Clear();
                 });
                 for (int i = 0; i < ListeningThread.DeviceList_Thread.Count; i++)
                 {
@@ -76,13 +67,11 @@ namespace RecoderServerApplication.MultiThread
                     };
                     main.Dispatcher.Invoke(() =>
                     {
-                        // ListViewItem item = new ListViewItem();
-                        // item.DataContext = data;
-                        // main.listView.Items.Add(data);
-                        listServerListUI.Add(data);
-                        listUI_Trans.Add(data2);
-                        //item.DataContext = data2;
-                        //main.list.Items.Add(data2);
+                        ListViewItem item = new ListViewItem();
+                        item.DataContext = data;
+                        main.listView.Items.Add(data);
+                        item.DataContext = data2;
+                        main.list.Items.Add(data2);
                     });
                 }
                 Thread.Sleep(100);

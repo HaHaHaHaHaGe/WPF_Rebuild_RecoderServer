@@ -13,21 +13,91 @@ namespace RecoderServerApplication.MultiThread
     {
         Thread Refresh_Thread;
         MainWindow main;
-        class ServerListUI
+        class ServerListUI : INotifyPropertyChanged
         {
-            public string Index { get; set; }
-            public string IPAddress { get; set; }
-            public string Port { get; set; }
-            public string ID { get; set; }
-            public string State { get; set; }
-            public string Error { get; set; }
-            public string RepairTimes { get; set; }
+            public string index;
+            public string Index
+            {
+                get { return index; }
+                set { index = value; OnPropertyChanged(new PropertyChangedEventArgs("Index")); }
+            }
+            public string ipaddress;
+            public string IPAddress
+            {
+                get { return ipaddress; }
+                set { ipaddress = value; OnPropertyChanged(new PropertyChangedEventArgs("IPAddress")); }
+            }
+            public string port;
+            public string Port
+            {
+                get { return port; }
+                set { port = value; OnPropertyChanged(new PropertyChangedEventArgs("Port")); }
+            }
+            public string id;
+            public string ID
+            {
+                get { return id; }
+                set { id = value; OnPropertyChanged(new PropertyChangedEventArgs("ID")); }
+            }
+            public string state;
+            public string State
+            {
+                get { return state; }
+                set { state = value; OnPropertyChanged(new PropertyChangedEventArgs("State")); }
+            }
+            public string error;
+            public string Error
+            {
+                get { return error; }
+                set { error = value; OnPropertyChanged(new PropertyChangedEventArgs("Error")); }
+            }
+            public string repairtimes;
+            public string RepairTimes
+            {
+                get { return repairtimes; }
+                set { repairtimes = value; OnPropertyChanged(new PropertyChangedEventArgs("RepairTimes")); }
+            }
+            #region // INotifyPropertyChanged成员
+            public event PropertyChangedEventHandler PropertyChanged;
+            public void OnPropertyChanged(PropertyChangedEventArgs e)
+            {
+                if (PropertyChanged != null)
+                {
+                    PropertyChanged(this, e);
+                }
+            }
+            #endregion
         }
-        public class UI_Trans
+        public class UI_Trans : INotifyPropertyChanged
         {
-            public int Index { get; set; }
-            public string ID { get; set; }
-            public string Bind { get; set; }
+            public string index;
+            public string Index
+            {
+                get { return index; }
+                set { index = value; OnPropertyChanged(new PropertyChangedEventArgs("Index")); }
+            }
+            public string id;
+            public string ID
+            {
+                get { return id; }
+                set { id = value; OnPropertyChanged(new PropertyChangedEventArgs("ID")); }
+            }
+            public string bind;
+            public string Bind
+            {
+                get { return bind; }
+                set { bind = value; OnPropertyChanged(new PropertyChangedEventArgs("bind")); }
+            }
+            #region // INotifyPropertyChanged成员
+            public event PropertyChangedEventHandler PropertyChanged;
+            public void OnPropertyChanged(PropertyChangedEventArgs e)
+            {
+                if (PropertyChanged != null)
+                {
+                    PropertyChanged(this, e);
+                }
+            }
+            #endregion
         }
         BindingList<ServerListUI> listServerListUI = new BindingList<ServerListUI>();
         BindingList<UI_Trans> listUI_Trans = new BindingList<UI_Trans>();
@@ -53,8 +123,8 @@ namespace RecoderServerApplication.MultiThread
                 {
                     //main.listView.Items.Clear();
                     //main.list.Items.Clear();
-                    listServerListUI.Clear();
-                    listUI_Trans.Clear();
+                    //listServerListUI.Clear();
+                    //listUI_Trans.Clear();
                 });
                 for (int i = 0; i < ListeningThread.DeviceList_Thread.Count; i++)
                 {
@@ -70,7 +140,7 @@ namespace RecoderServerApplication.MultiThread
                     };
                     UI_Trans data2 = new UI_Trans
                     {
-                        Index = i,
+                        Index = i.ToString(),
                         ID = ListeningThread.DeviceList_Thread[i].Device_Recv_Struct.Device_ID,
                         Bind = ListeningThread.DeviceList_Thread[i].Device_Recv_Struct.Bind_User,
                     };
@@ -79,8 +149,40 @@ namespace RecoderServerApplication.MultiThread
                         // ListViewItem item = new ListViewItem();
                         // item.DataContext = data;
                         // main.listView.Items.Add(data);
-                        listServerListUI.Add(data);
-                        listUI_Trans.Add(data2);
+                        bool flag = false;
+                        for (int j = 0; j < listUI_Trans.Count; j++)
+                        {
+                            if (listUI_Trans[j].ID == data2.ID)
+                            {
+                                flag = true;
+                                listUI_Trans[j].Index = data2.index;
+                                listUI_Trans[j].Bind = data2.Bind;
+                            }
+                        }
+                        if (flag == false)
+                            listUI_Trans.Add(data2);
+
+
+                        flag = false;
+                        for(int j = 0; j < listServerListUI.Count;j++)
+                        {
+                            if(listServerListUI[j].ID == data.ID)
+                            {
+                                flag = true;
+                                listServerListUI[j].Error = data.Error;
+                                listServerListUI[j].Index = data.index;
+                                listServerListUI[j].IPAddress = data.IPAddress;
+                                listServerListUI[j].Port = data.Port;
+                                listServerListUI[j].RepairTimes = data.RepairTimes;
+                                listServerListUI[j].State = data.State;
+                            }
+                        }
+                        if(flag == false)
+                            listServerListUI.Add(data);
+
+
+
+
                         //item.DataContext = data2;
                         //main.list.Items.Add(data2);
                     });

@@ -13,7 +13,7 @@ namespace RecoderServerApplication.MultiThread
     {
         Thread Refresh_Thread;
         MainWindow main;
-        class ServerListUI : INotifyPropertyChanged
+        public class ServerListUI : INotifyPropertyChanged
         {
             public string index;
             public string Index

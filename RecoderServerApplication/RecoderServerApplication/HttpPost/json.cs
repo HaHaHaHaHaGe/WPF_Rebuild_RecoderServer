@@ -90,14 +90,20 @@ namespace RecoderServerApplication.HttpPost
         }
         public static LoginJsonResultStruct LogoutJsonResult(string JsonText)
         {
-            recv.users.Clear();
-            recv.flag = false;
-            string[] str = new string[7];
-            var json2 = (JObject)JsonConvert.DeserializeObject(JsonText);
-            recv.flag = json2["flag"].ToString() == "1" ? true : false;
-            recv.message = json2["message"].ToString();
+            try
+            {
+                recv.users.Clear();
+                recv.flag = false;
+                string[] str = new string[7];
+                var json2 = (JObject)JsonConvert.DeserializeObject(JsonText);
+                recv.flag = json2["flag"].ToString() == "1" ? true : false;
+                recv.message = json2["message"].ToString();
 
+            }
+            catch(Exception e)
+            {
 
+            }
             //var json3 = (JObject)JsonConvert.DeserializeObject(Object.ToString());
             if (recv.flag)
             {

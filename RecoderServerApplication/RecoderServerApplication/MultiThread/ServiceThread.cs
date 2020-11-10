@@ -200,6 +200,8 @@ namespace RecoderServerApplication.MultiThread
                     {
 
                         List<Error_Statistical> list_error = Device_Recv_Struct.Error;
+                        if (list_error == null)
+                            continue;
                         if (dstate == Device_State.ErrorCorrection && WavCreate.GetAllWav_ERROR_Number() == 0)
                         {
                             byte[] recvdata = Construct_Data_Packet(new TransData_Struct(Protocol_Keyword.State_Idle, item.Device_ID, new byte[] { }));

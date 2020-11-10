@@ -50,6 +50,34 @@ namespace RecoderServerApplication
             {
                 sql_data.Items.Add(recv[i]);
             }
+
+
+            SQLite_InitData init = SQLite_RW.GetInitData();
+            group.Text = init.init_Group;
+            wifi.Text = init.init_WIFI;
+            pass.Text = init.init_PASS;
+            ip.Text = init.init_IP;
+            port.Text = init.init_port;
+            serverip.Text = init.init_Server_IP;
+            porttext.Text = init.init_Server_Port;
+            //--------------------------------------------------------------------
+            //SQLiteConnection cn = new SQLiteConnection("data source=" + "database" + ".sqlite");
+            //if (cn.State != System.Data.ConnectionState.Open)
+            //{
+            //    cn.Open();
+            //    SQLiteCommand cmd = new SQLiteCommand();
+            //    cmd.Connection = cn;
+            //    //cmd.CommandText = "drop TABLE system";
+            //    cmd.CommandText = "INSERT INTO system VALUES('0','','','','','','','')";
+            //    //cmd.CommandText = "CREATE TABLE system('ID' int,'group' string,'wifi' string,'pass' string,'ip' string,'port' string,'serverip' string,'serverport' string)";
+
+            //    cmd.ExecuteNonQuery();
+
+
+
+            //}
+            //cn.Close();
+            //-----------------------------------------------------------------------
             //errormessage.ItemsSource = lis.error_message;
             //Process.Start("speex_decoder.exe","D:\\github_project\\AncientProjects\\RadioRecoder\\WPF_Server\\RecoderServerApplication\\RecoderServerApplication\\bin\\Release\\20190623225152_HS6YX83M\\HQOBJSQZ_2019-06-23-22-52-33-000_REC.wzr");
         }
@@ -257,6 +285,15 @@ namespace RecoderServerApplication
             iswifibutton = !iswifibutton;
             if (iswifibutton)
             {
+                SQLite_InitData init = new SQLite_InitData();
+                init.init_Group = group.Text;
+                init.init_WIFI = wifi.Text;
+                init.init_PASS = pass.Text;
+                init.init_IP = ip.Text;
+                init.init_port = port.Text;
+                init.init_Server_IP = serverip.Text;
+                init.init_Server_Port = porttext.Text;
+                SQLite_RW.SetData(init);
                 wificon.Content = "Cancle..";
                 calib.IsEnabled = false;
                 radiate.IsEnabled = false;
@@ -273,6 +310,7 @@ namespace RecoderServerApplication
             }
             else
             {
+
                 wificon.Content = "Server";
                 calib.IsEnabled = true;
                 radiate.IsEnabled = true;
@@ -323,11 +361,21 @@ namespace RecoderServerApplication
         {
             if (!isStartServer)
             {
+                SQLite_InitData init = new SQLite_InitData();
+                init.init_Group = group.Text;
+                init.init_WIFI = wifi.Text;
+                init.init_PASS = pass.Text;
+                init.init_IP = ip.Text;
+                init.init_port = port.Text;
+                init.init_Server_IP = serverip.Text;
+                init.init_Server_Port = porttext.Text;
+                SQLite_RW.SetData(init);
                 lis.StartListen(int.Parse(porttext.Text),serverip.Text, int.Parse(fstext.Text), int.Parse(packge.Text), DateTime.Now.ToString("yyyyMMddHHmmss")+"_"+ SoftID);
                 startbutton.Content = "StopServer";
             }
             else
             {
+                
                 lis.StopListen();
                 startbutton.Content = "StartServer";
             }
@@ -692,6 +740,24 @@ namespace RecoderServerApplication
             {
                 sql_data.Items.Add(recv[i]);
             }
+        }
+        private void SingleEndEvent(object sender, RoutedEventArgs e)
+        {
+            SoftUI_Thread.ServerListUI select = listView.SelectedItem as SoftUI_Thread.ServerListUI;
+            if (select == null)
+                return;
+            foreach (var item in ListeningThread.DeviceList_Thread)
+            {
+                if(item.ipaddress == select.IPAddress)
+                {
+                    byte[] send = WIFI_Protocol.Construct_Data_Packet(new Protocol_Keyword_Function.TransData_Struct(Protocol_Keyword_Function.Protocol_Keyword.State_EndRecording, new byte[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }, new byte[] { }));
+                    item.Ser.Send(send);
+                    break;
+                }
+            }
+            
+            
+            MessageBox.Show(select.id);
         }
     }
 }

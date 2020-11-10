@@ -22,6 +22,12 @@
                     <GridViewColumn Header="Repair Times" Width="100" DisplayMemberBinding="{Binding Path=RepairTimes}"/>
                 </GridView>
             </ListView.View>
+            <ListView.ContextMenu>
+                <ContextMenu>
+                    <MenuItem Header="End" Click="SingleEndEvent">
+                    </MenuItem>
+                </ContextMenu>
+            </ListView.ContextMenu>
             <ListBox x:Name="listBox" Height="100" Width="100"/>
         </ListView>
         <Button x:Name="button1" Content="Close" HorizontalAlignment="Left" Margin="159,525,0,0" VerticalAlignment="Top" Width="95" Height="39" Click="button1_Click" />

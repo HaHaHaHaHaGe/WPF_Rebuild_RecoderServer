@@ -33,7 +33,8 @@ namespace RecoderServerApplication.ESP8266
             State_FixDataRequest,
             State_TransRepairData,
             State_DeviceInfo,
-            State_ReadyToStartRecoder
+            State_ReadyToStartRecoder,
+            State_EndRecording
         }
         public class State_Function
         {
@@ -53,7 +54,9 @@ namespace RecoderServerApplication.ESP8266
             { Protocol_Keyword.State_FixDataRequest ,           new State_Function { State_string = "Fix Data Request\r\n",             Function_Event = new State_Function_Event(State_FixDataRequest) ,           State_recv_class = new State_FixDataRequest_refData()           }},
             { Protocol_Keyword.State_TransRepairData ,          new State_Function { State_string = "Recoder Repair Data\r\n",          Function_Event = new State_Function_Event(State_TransRepairData) ,          State_recv_class = new State_TransRepairData_refData()          }},
             { Protocol_Keyword.State_DeviceInfo ,               new State_Function { State_string = "Synchronous Device Info\r\n",      Function_Event = new State_Function_Event(State_DeviceInfo) ,               State_recv_class = new State_DeviceInfo_refData()               }},
-            { Protocol_Keyword.State_ReadyToStartRecoder ,      new State_Function { State_string = "Ready To Start Recoder\r\n",       Function_Event = new State_Function_Event(State_ReadyToStartRecoder) ,      State_recv_class = new State_ReadyToStartRecoder_refData()      }}
+            { Protocol_Keyword.State_ReadyToStartRecoder ,      new State_Function { State_string = "Ready To Start Recoder\r\n",       Function_Event = new State_Function_Event(State_ReadyToStartRecoder) ,      State_recv_class = new State_ReadyToStartRecoder_refData()      }},
+            { Protocol_Keyword.State_EndRecording ,             new State_Function { State_string = "End Recording\r\n",                Function_Event = new State_Function_Event(State_EndRecording) ,             State_recv_class = new State_EndRecording_refData()             }}
+
         };
         public class State_FixDataRequest_refData
         {
@@ -174,6 +177,17 @@ namespace RecoderServerApplication.ESP8266
 
         }
         private static object State_ReadyToStartRecoder(TransData_Struct data)
+        {
+            State_ReadyToStartRecoder_refData recv = new State_ReadyToStartRecoder_refData();
+            return recv;
+
+        }
+
+        public class State_EndRecording_refData
+        {
+
+        }
+        private static object State_EndRecording(TransData_Struct data)
         {
             State_ReadyToStartRecoder_refData recv = new State_ReadyToStartRecoder_refData();
             return recv;

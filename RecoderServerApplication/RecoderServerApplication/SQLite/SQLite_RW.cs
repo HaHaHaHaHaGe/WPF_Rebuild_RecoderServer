@@ -68,6 +68,35 @@ namespace RecoderServerApplication.SQLite
                 MessageBox.Show(e.Message);
             }
         }
+        public static SQLite_InitData GetInitData()
+        {
+            SQLite_InitData recv = new SQLite_InitData();
+            SQLiteConnection cn = new SQLiteConnection("data source=" + database_name + ".sqlite");
+            if (cn.State != System.Data.ConnectionState.Open)
+            {
+                cn.Open();
+                SQLiteCommand cmd = new SQLiteCommand();
+                cmd.Connection = cn;
+                cmd.CommandText = "SELECT * FROM system";
+                SQLiteDataReader sr = cmd.ExecuteReader();
+                //sql_data.Items.Clear();
+                if (sr.Read())
+                {
+                    recv.init_Group = sr.GetValue(1).ToString();
+                    recv.init_WIFI = sr.GetValue(2).ToString();
+                    recv.init_PASS = sr.GetValue(3).ToString();
+                    recv.init_IP = sr.GetValue(4).ToString();
+                    recv.init_port = sr.GetValue(5).ToString();
+                    recv.init_Server_IP = sr.GetValue(6).ToString();
+                    recv.init_Server_Port = sr.GetValue(7).ToString();
+                    //Console.WriteLine($"{sr.GetString(0)} {sr.GetString(1)}");
+                }
+
+
+            }
+            cn.Close();
+            return recv;
+        }
         public static List<SQLite_DataStruct> GetData()
         {
             SqlData.Clear();
@@ -98,7 +127,38 @@ namespace RecoderServerApplication.SQLite
             cn.Close();
             return SqlData;
         }
+        public static bool SetData(SQLite_InitData data)
+        {
+            SQLiteConnection cn = new SQLiteConnection("data source=" + database_name + ".sqlite");
+            if (cn.State != System.Data.ConnectionState.Open)
+            {
+                cn.Open();
+                SQLiteCommand cmd = new SQLiteCommand();
+                cmd.Connection = cn;
 
+                try
+                {//'ID' int,'group' string,'wifi' string,'pass' string,'ip' string,'port' string,'serverip' string,'serverport' string
+                    cmd.CommandText = "UPDATE system SET 'group'='"+ (data.init_Group == null ? "" : data.init_Group) + 
+                                                        "',wifi='"+ (data.init_WIFI == null ? "" : data.init_WIFI) + 
+                                                        "',pass='"+ (data.init_PASS == null ? "" : data.init_PASS) + 
+                                                        "',ip='"+ (data.init_IP == null ? "" : data.init_IP) + 
+                                                        "',port='"+ (data.init_port == null ? "" : data.init_port) + 
+                                                        "',serverip='"+ (data.init_Server_IP == null ? "" : data.init_Server_IP) + 
+                                                        "',serverport='"+ (data.init_Server_Port == null ? "" : data.init_Server_Port) + "' WHERE ID=0";
+                    cmd.ExecuteNonQuery();
+                }
+                catch (Exception ex)
+                {
+                    cn.Close();
+                    MessageBox.Show(ex.Message);
+                    return false;
+                }
+                
+
+            }
+            cn.Close();
+            return true;
+        }
         public static bool SetData(SQLite_DataStruct data)
         {
             SQLiteConnection cn = new SQLiteConnection("data source=" + database_name + ".sqlite");

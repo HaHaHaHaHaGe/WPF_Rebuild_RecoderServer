@@ -26,6 +26,22 @@ namespace RecoderServerApplication.RF24L01
         {
             ComPort.ComSendData(softID + "BEGIN:End");
         }
+        private static byte[] StringToHex(string hs, Encoding encode)
+        {
+            string strTemp = "";
+            byte[] b = new byte[hs.Length / 2];
+            for (int i = 0; i < hs.Length / 2; i++)
+            {
+                strTemp = hs.Substring(i * 2, 2);
+                b[i] = Convert.ToByte(strTemp, 16);
+            }
+            return b;
+        }
+
+        public static void SingleSend_End(string softID, string ID)
+        {
+            ComPort.ComSendData(softID + "BEGIN:SE", StringToHex(ID,Encoding.ASCII));
+        }
 
 
 

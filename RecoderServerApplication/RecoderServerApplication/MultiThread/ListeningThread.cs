@@ -41,7 +41,7 @@ namespace RecoderServerApplication.MultiThread
                     error_message.Add(e.Message);
                     continue;
                 }
-                socket.ReceiveTimeout = 2000;
+                socket.ReceiveTimeout = 20000;
                // Thread.Sleep(500);
                 while (true)
                 {

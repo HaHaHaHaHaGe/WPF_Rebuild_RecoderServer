@@ -746,18 +746,21 @@ namespace RecoderServerApplication
             SoftUI_Thread.ServerListUI select = listView.SelectedItem as SoftUI_Thread.ServerListUI;
             if (select == null)
                 return;
-            foreach (var item in ListeningThread.DeviceList_Thread)
-            {
-                if(item.ipaddress == select.IPAddress)
-                {
-                    byte[] send = WIFI_Protocol.Construct_Data_Packet(new Protocol_Keyword_Function.TransData_Struct(Protocol_Keyword_Function.Protocol_Keyword.State_EndRecording, new byte[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }, new byte[] { }));
-                    item.Ser.Send(send);
-                    break;
-                }
-            }
-            
-            
-            MessageBox.Show(select.id);
+
+            RF_DataAnalysis.SingleSend_End(SoftID, select.ID);
+            //foreach (var item in ListeningThread.DeviceList_Thread)
+            //{
+            //    if(item.ipaddress == select.IPAddress)
+            //    {
+            //        //byte[] send = WIFI_Protocol.Construct_Data_Packet(new Protocol_Keyword_Function.TransData_Struct(Protocol_Keyword_Function.Protocol_Keyword.State_EndRecording, new byte[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }, new byte[] { }));
+            //        //item.Ser.Send(send);
+            //        RF_DataAnalysis.SingleSend_End(SoftID, select.ID);
+            //        break;
+            //    }
+            //}
+
+
+            //MessageBox.Show(select.ID);
         }
     }
 }

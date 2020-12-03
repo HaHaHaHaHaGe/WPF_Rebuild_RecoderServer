@@ -14,6 +14,12 @@ namespace RecoderServerApplication.WAVData
         private string dirstr;
         private int single_time;
 
+        public void InitNopList(int i)
+        {
+            for(int j = 0; j < i; j++)
+                List_WavFile.Add(new Speex_Creater());
+        }
+
         public class Error_Statistical
         {
             public string file;

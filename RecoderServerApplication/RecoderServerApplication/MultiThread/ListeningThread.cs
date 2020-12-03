@@ -119,7 +119,7 @@ namespace RecoderServerApplication.MultiThread
         {
             _wavfs = wavfs;
             _wavfilesec = wavfilesec;
-            _wavfiledir = wavfiledir;
+            _wavfiledir = "AudioFile\\"+wavfiledir;
             //Server_End_Point = new IPEndPoint(IPAddress.Parse(GetIpAddress()), port);
             Server_End_Point = new IPEndPoint(IPAddress.Parse(ip), port);
             Listen_Socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);

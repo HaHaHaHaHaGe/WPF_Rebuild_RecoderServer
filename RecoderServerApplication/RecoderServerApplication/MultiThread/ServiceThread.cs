@@ -1,4 +1,5 @@
 ﻿using RecoderServerApplication.SQLite;
+using RecoderServerApplication.Tools;
 using RecoderServerApplication.WAVData;
 using System;
 using System.Collections.Generic;
@@ -11,6 +12,7 @@ using System.Threading.Tasks;
 using static RecoderServerApplication.ESP8266.Protocol_Keyword_Function;
 using static RecoderServerApplication.ESP8266.WIFI_Protocol;
 using static RecoderServerApplication.WAVData.SrcDataCutApart;
+
 
 namespace RecoderServerApplication.MultiThread
 {
@@ -182,6 +184,21 @@ namespace RecoderServerApplication.MultiThread
                     {
                         Device_Recv_Struct.Device_State = "录音中";
                         dstate = Device_State.Recording;
+                        if(WavCreate == null)
+                        {
+                            string userid = "";
+                            List<SQLite_DataStruct> sqldata = SQLite_RW.GetData();
+                            for (int i = 0; i < sqldata.Count; i++)
+                            {
+                                if (sqldata[i].DeviceID == Device_Recv_Struct.Device_ID)
+                                {
+                                    userid = sqldata[i].UserID;
+                                    break;
+                                }
+                            }
+                            WavCreate = new SrcDataCutApart(Fre, Sec, DataRecovery.getLastAudioFolder() + "\\" + userid + "_" + Device_Recv_Struct.Device_ID + "_");
+                            WavCreate.InitNopList(DataRecovery.getLastRecoderProgress(DataRecovery.getLastAudioFolder(), Device_Recv_Struct.Device_ID));
+                        }
                         if (WavCreate != null && trans_refdata.wav_data != null)
                         {
                             WavCreate.WriteWavData(trans_refdata.wav_data, trans_refdata.Start_Index, trans_refdata.Init_Time);
@@ -200,7 +217,7 @@ namespace RecoderServerApplication.MultiThread
                     {
 
                         List<Error_Statistical> list_error = Device_Recv_Struct.Error;
-                        if (list_error == null)
+                        if (list_error == null || WavCreate == null)
                             continue;
                         if (dstate == Device_State.ErrorCorrection && WavCreate.GetAllWav_ERROR_Number() == 0)
                         {

@@ -91,6 +91,7 @@
     <Compile Include="MultiThread\UploadThread.cs" />
     <Compile Include="SQLite\SQLite_DataStruct.cs" />
     <Compile Include="SQLite\SQLite_RW.cs" />
+    <Compile Include="Tools\DataRecovery.cs" />
     <Compile Include="WAVData\SrcDataCutApart.cs" />
     <Compile Include="WAVData\Speex_Creater.cs" />
     <Compile Include="RF24L01\ComPort.cs" />

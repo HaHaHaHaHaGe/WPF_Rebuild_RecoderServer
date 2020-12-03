@@ -82,6 +82,11 @@ namespace RecoderServerApplication.WAVData
             CreateWavFile(dirstr,fs,wavlen);
         }
 
+        public Speex_Creater()
+        {
+            file = null;
+        }
+
         public void CreateWavFile(string dirstr,int fs,uint wavlen)
         {
             wavhead.riff.ChunkID = 0X46464952; 

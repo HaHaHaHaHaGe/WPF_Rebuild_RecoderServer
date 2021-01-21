@@ -89,7 +89,7 @@ namespace RecoderServerApplication.ESP8266
                         if ((commLoc + search_list[i].Length + 4 + 4) >= srcdata.Length)
                         {
                             for (int k = 0; k < search_list[i].Length; k++)
-                                srcdata[commLoc + k] = 0;
+                                srcdata[commLoc + k - 1] = 0;
                             break;
                         }
                         int recvdatalen = srcdata[commLoc + search_list[i].Length] << 24;

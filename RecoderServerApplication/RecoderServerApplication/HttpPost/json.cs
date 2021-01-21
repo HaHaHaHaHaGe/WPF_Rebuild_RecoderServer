@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace RecoderServerApplication.HttpPost
@@ -97,12 +98,13 @@ namespace RecoderServerApplication.HttpPost
                 string[] str = new string[7];
                 var json2 = (JObject)JsonConvert.DeserializeObject(JsonText);
                 recv.flag = json2["flag"].ToString() == "1" ? true : false;
+                
                 recv.message = json2["message"].ToString();
 
             }
             catch(Exception e)
             {
-
+                Thread.Sleep(1000);
             }
             //var json3 = (JObject)JsonConvert.DeserializeObject(Object.ToString());
             if (recv.flag)

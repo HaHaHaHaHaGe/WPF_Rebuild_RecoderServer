@@ -178,14 +178,20 @@ namespace RecoderServerApplication
             RF_DataAnalysis.CastSend_Begin(SoftID);
         }
 
-
+        bool isinit = false;
         private void bEnd_Click(object sender, RoutedEventArgs e)
         {
             RF_DataAnalysis.CastSend_End(SoftID);
+            isinit = false;
         }
         private void bInit_Click(object sender, RoutedEventArgs e)
         {
             RF_DataAnalysis.CastSend_Init(SoftID, FS.Text,GADFS.Text, textBox12.Text);
+            if(!isinit)
+            {
+                isinit = true;
+                lis.UpdateRecoderDir(DateTime.Now.ToString("yyyyMMddHHmmss") + "_" + SoftID);
+            }
         }
         //private void BindClink(object sender, MouseButtonEventArgs e)
         //{

@@ -113,6 +113,14 @@ namespace RecoderServerApplication.MultiThread
             }
         }
 
+        public void UpdateRecoderDir(string wavfiledir)
+        {
+            _wavfiledir = "AudioFile\\" + wavfiledir;
+            for (int i = 0; i < DeviceList_Thread.Count; i++)
+            {
+                DeviceList_Thread[i].updateRecoderDir(_wavfiledir);
+            }
+        }
 
 
         public void StartListen(int port,string ip,int wavfs,int wavfilesec,string wavfiledir)

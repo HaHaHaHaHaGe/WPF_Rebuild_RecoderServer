@@ -52,6 +52,10 @@ namespace RecoderServerApplication.MultiThread
             Service_Function.Start();
             Service_Function.IsBackground = true;
         }
+        public void updateRecoderDir(string D)
+        {
+            Dir = D;
+        }
         public void CloseThread()
         {
             Ser.Close();
@@ -108,6 +112,7 @@ namespace RecoderServerApplication.MultiThread
                 }
                 catch (Exception e)
                 {
+                    Thread.Sleep(1000);
                     dstate = Device_State.Offline;
                     Device_Recv_Struct.Device_State = "离线";
                     continue;
@@ -157,7 +162,7 @@ namespace RecoderServerApplication.MultiThread
                     {
                         Device_Recv_Struct.Bind_User = bind_refdata.Binding_User;
                         byte[] confirm = Construct_Data_Packet(new TransData_Struct(Protocol_Keyword.State_Binding_Check_Confirm,item.Device_ID,new byte[] { }));
-                        Ser.Send(confirm);
+                        SendData(confirm);
                     }
                     if(recv is State_ReadyToStartRecoder_refData ready_refdata)
                     {
@@ -222,7 +227,7 @@ namespace RecoderServerApplication.MultiThread
                         if (dstate == Device_State.ErrorCorrection && WavCreate.GetAllWav_ERROR_Number() == 0)
                         {
                             byte[] recvdata = Construct_Data_Packet(new TransData_Struct(Protocol_Keyword.State_Idle, item.Device_ID, new byte[] { }));
-                            Ser.Send(recvdata);
+                            SendData(recvdata);
                         }
                         for (int i = 0; i < list_error.Count; i++)
                         {
@@ -243,7 +248,7 @@ namespace RecoderServerApplication.MultiThread
                                     (byte)(end >> 8),
                                     (byte)(end),
                                     }));
-                                Ser.Send(confirm);
+                                SendData(confirm);
                                 isloop = true;
                                 break;
                             }

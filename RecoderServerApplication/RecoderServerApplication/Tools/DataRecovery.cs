@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Win32;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -38,13 +39,14 @@ namespace RecoderServerApplication.Tools
 
         public static int getLastRecoderProgress(string dirName,string deviceID)
         {
-           
+            int recv = 0;
             string[] files = Directory.GetFiles(dirName, "*.wzr");
             DateTime newDirIndex = new DateTime(0);
             DateTime time;
             foreach (string file in files)
             {
-                string[] sp = file.Split('_');
+                string filename = Path.GetFileName(file);
+                string[] sp = filename.Split('_');
                 if(sp[1] == deviceID)
                 {
                     time = DateTime.ParseExact(sp[2], "yyyy-MM-dd-HH-mm-ss-000", System.Globalization.CultureInfo.CurrentCulture);
@@ -52,9 +54,15 @@ namespace RecoderServerApplication.Tools
                     {
                         newDirIndex = time;
                     }
+
+                    FileInfo fileInfo = new FileInfo(file);
+                    if (fileInfo.Length > 0)
+                    {
+                        recv++;
+                    }
                 }
             }
-            return 0;
+            return recv;
         }
     }
 }

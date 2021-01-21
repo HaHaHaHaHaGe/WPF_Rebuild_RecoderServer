@@ -8,6 +8,7 @@ using System.Net;
 using System.IO;
 using System.Net.Security;
 using System.Security.Cryptography.X509Certificates;
+using System.Threading;
 
 namespace RecoderServerApplication.SQLite
 {
@@ -136,7 +137,9 @@ namespace RecoderServerApplication.SQLite
             }
             catch(Exception e)
             {
+                Thread.Sleep(2000);
                 return false;
+
             }
             
             return data2.flag;

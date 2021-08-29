@@ -6,6 +6,8 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Controls;
+using System.Windows.Data;
+using System.Windows.Media;
 
 namespace RecoderServerApplication.MultiThread
 {
@@ -56,6 +58,36 @@ namespace RecoderServerApplication.MultiThread
             {
                 get { return repairtimes; }
                 set { repairtimes = value; OnPropertyChanged(new PropertyChangedEventArgs("RepairTimes")); }
+            }
+            public class BGConvert : IValueConverter
+            {
+
+                public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+
+                {
+
+                    if ((string)value == "在线")
+
+                    {
+
+                        return new SolidColorBrush(Colors.Red);
+
+                    }
+
+                    else
+
+                        return new SolidColorBrush(Colors.White);
+
+                }
+
+                public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+
+                {
+
+                    throw new NotImplementedException();
+
+                }
+
             }
             #region // INotifyPropertyChanged成员
             public event PropertyChangedEventHandler PropertyChanged;

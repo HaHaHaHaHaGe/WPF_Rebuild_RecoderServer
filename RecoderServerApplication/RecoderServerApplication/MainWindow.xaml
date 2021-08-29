@@ -7,7 +7,7 @@
         mc:Ignorable="d"
         Title="Recoder Server Application" Height="612.428" Width="1650.681">
     <Grid>
-        <Button x:Name="startbutton" Content="StartServer" HorizontalAlignment="Left" Margin="10,525,0,0" VerticalAlignment="Top" Width="88"  Height="34" Click="button_Click_2"/>
+        <Button x:Name="startbutton" Content="启动服务器" HorizontalAlignment="Left" Margin="10,525,0,0" VerticalAlignment="Top" Width="88"  Height="34" Click="button_Click_2"/>
         <TextBox x:Name="porttext" HorizontalAlignment="Left" Height="23" Margin="61,489,0,0" TextWrapping="Wrap" Text="8880" VerticalAlignment="Top" Width="120"/>
         <Label x:Name="label" Content="Port：" HorizontalAlignment="Left" Margin="10,485,0,0" VerticalAlignment="Top"/>
         <ListView x:Name="listView" HorizontalAlignment="Left" Height="178" Margin="10,302,0,0" VerticalAlignment="Top" Width="942">
@@ -17,7 +17,18 @@
                     <GridViewColumn Header="IP Address" Width="110" DisplayMemberBinding="{Binding Path=IPAddress}"/>
                     <GridViewColumn Header="Port" Width="80" DisplayMemberBinding="{Binding Path=Port}"/>
                     <GridViewColumn Header="ID" Width="200" DisplayMemberBinding="{Binding Path=ID}"/>
-                    <GridViewColumn Header="State" Width="110" DisplayMemberBinding="{Binding Path=State}"/>
+                    <GridViewColumn Header="State" Width="110" DisplayMemberBinding="{Binding Path=State}">
+                        <GridViewColumn.CellTemplate>
+
+                            <DataTemplate>
+
+                                <StackPanel Background="{Binding Path=State,Converter={StaticResource BGConvert} }">
+                                </StackPanel>
+
+                            </DataTemplate>
+
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
                     <GridViewColumn Header="Error Package" Width="100" DisplayMemberBinding="{Binding Path=Error}"/>
                     <GridViewColumn Header="Repair Times" Width="100" DisplayMemberBinding="{Binding Path=RepairTimes}"/>
                 </GridView>
@@ -30,18 +41,17 @@
             </ListView.ContextMenu>
             <ListBox x:Name="listBox" Height="100" Width="100"/>
         </ListView>
-        <Button x:Name="button1" Content="Close" HorizontalAlignment="Left" Margin="159,525,0,0" VerticalAlignment="Top" Width="95" Height="39" Click="button1_Click" />
         <TextBox x:Name="fstext" HorizontalAlignment="Left" Height="23" Margin="270,489,0,0" TextWrapping="Wrap" Text="8000" VerticalAlignment="Top" Width="120"/>
         <Label x:Name="label1" Content="fs:" HorizontalAlignment="Left" Margin="242,489,0,0" VerticalAlignment="Top"/>
 
         <ScrollBar Name="scPitch" Minimum="-180" Maximum="180" Margin="1183,-10,348,10" Visibility="Hidden" />
         <ScrollBar Name="scYaw" Minimum="-180" Maximum="180" Margin="1134,-10,397,10" Visibility="Hidden" />
         <ScrollBar Name="scRoll" Minimum="-180" Maximum="180" Margin="1161,-10,370,10" Visibility="Hidden" />
-        <Button x:Name="OpenCOM" Content="OpenCOM" HorizontalAlignment="Left" Margin="151,12,0,0" VerticalAlignment="Top" Width="75" Click="OpenCOM_Click"/>
-        <Button x:Name="bBlink" Content="Blink" HorizontalAlignment="Left" Margin="831,236,0,0" VerticalAlignment="Top" Width="75" IsEnabled="False" Click="bBlink_Click"/>
-        <Button x:Name="bInit" Content="Init" HorizontalAlignment="Left" Margin="831,271,0,0" VerticalAlignment="Top" Width="75" IsEnabled="False" Click="bInit_Click"/>
-        <Button x:Name="bBegin" Content="Begin" HorizontalAlignment="Left" Margin="831,160,0,0" VerticalAlignment="Top" Width="75" IsEnabled="False" Click="bBegin_Click"/>
-        <Button x:Name="bEnd" Content="End" HorizontalAlignment="Left" Margin="831,197,0,0" VerticalAlignment="Top" Width="75" IsEnabled="False" Click="bEnd_Click"/>
+        <Button x:Name="OpenCOM" Content="打开串口" HorizontalAlignment="Left" Margin="151,12,0,0" VerticalAlignment="Top" Width="75" Click="OpenCOM_Click"/>
+        <Button x:Name="bBlink" Content="闪烁测试" HorizontalAlignment="Left" Margin="831,236,0,0" VerticalAlignment="Top" Width="75" IsEnabled="False" Click="bBlink_Click"/>
+        <Button x:Name="bInit" Content="初始化" HorizontalAlignment="Left" Margin="831,271,0,0" VerticalAlignment="Top" Width="75" IsEnabled="False" Click="bInit_Click"/>
+        <Button x:Name="bBegin" Content="开始" HorizontalAlignment="Left" Margin="831,160,0,0" VerticalAlignment="Top" Width="75" IsEnabled="False" Click="bBegin_Click"/>
+        <Button x:Name="bEnd" Content="结束" HorizontalAlignment="Left" Margin="831,197,0,0" VerticalAlignment="Top" Width="75" IsEnabled="False" Click="bEnd_Click"/>
         <ComboBox x:Name="comboBox" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="120" PreviewMouseLeftButtonDown="Clink"/>
         <TextBox x:Name="FS" HorizontalAlignment="Left" Height="23" Margin="726,271,0,0" TextWrapping="Wrap" Text="8000" VerticalAlignment="Top" Width="43"/>
         <TextBox x:Name="GADFS" HorizontalAlignment="Left" Height="23" Margin="774,271,0,0" TextWrapping="Wrap" Text="30" VerticalAlignment="Top" Width="46"/>
@@ -49,8 +59,8 @@
         <Button Content="Read" HorizontalAlignment="Left" Margin="831,42,0,0" VerticalAlignment="Top" Width="75" Click="Button_Click_1"/>
         <TextBox Name="SessionID" HorizontalAlignment="Left" Height="23" Margin="706,38,0,0" TextWrapping="Wrap" Text="1a2b3c4d5e01010" VerticalAlignment="Top" Width="120"/>
         <Label Content="SessionID:" HorizontalAlignment="Left" Margin="630,36,0,0" VerticalAlignment="Top" Width="71"/>
-        <Button Name="bindb" Content="Bind" HorizontalAlignment="Left" Margin="831,83,0,0" VerticalAlignment="Top" Width="75" Click="Button_Click" IsEnabled="False"/>
-        <Button Name="radiate" IsEnabled="False" Content="Radiate" HorizontalAlignment="Left" Margin="246,13,0,0" VerticalAlignment="Top" Width="75" Click="radiate_Click"/>
+        <Button Name="bindb" Content="绑定" HorizontalAlignment="Left" Margin="831,83,0,0" VerticalAlignment="Top" Width="75" Click="Button_Click" IsEnabled="False"/>
+        <Button Name="radiate" IsEnabled="False" Content="广播" HorizontalAlignment="Left" Margin="246,13,0,0" VerticalAlignment="Top" Width="75" Click="radiate_Click"/>
         <ListView Name="list" HorizontalAlignment="Left" Height="248" Margin="12,37,0,0" VerticalAlignment="Top" Width="595" SelectionChanged="List_SelectionChanged">
             <ListView.View>
                 <GridView>
@@ -60,7 +70,7 @@
                 </GridView>
             </ListView.View>
         </ListView>
-        <Button Name="wificon" Content="Server" HorizontalAlignment="Left" Margin="831,122,0,0" VerticalAlignment="Top" Width="75" IsEnabled="False" Click="wificon_Click"/>
+        <Button Name="wificon" Content="连接WIFI" HorizontalAlignment="Left" Margin="831,122,0,0" VerticalAlignment="Top" Width="75" IsEnabled="False" Click="wificon_Click"/>
         <TextBox Name="wifi" HorizontalAlignment="Left" Height="23" Margin="706,118,0,0" TextWrapping="Wrap" Text="ASUS" VerticalAlignment="Top" Width="120"/>
         <TextBox Name="pass" HorizontalAlignment="Left" Height="23" Margin="706,156,0,0" TextWrapping="Wrap" Text="99775533" VerticalAlignment="Top" Width="120"/>
         <TextBox Name="ip" HorizontalAlignment="Left" Height="23" Margin="706,193,0,0" TextWrapping="Wrap" Text="192.168.50.222" VerticalAlignment="Top" Width="120"/>
@@ -71,7 +81,7 @@
         <Label Content="Port:" HorizontalAlignment="Left" Margin="630,230,0,0" VerticalAlignment="Top" Width="71" HorizontalContentAlignment="Right"/>
         <Label Content="packge:" HorizontalAlignment="Left" Margin="438,489,0,0" VerticalAlignment="Top"/>
         <TextBox Name="packge" HorizontalAlignment="Left" Height="23" Margin="497,489,0,0" TextWrapping="Wrap" Text="60" VerticalAlignment="Top" Width="120"/>
-        <Button Name="calib" Content="Calibration" HorizontalAlignment="Left" Height="19" Margin="630,271,0,0" VerticalAlignment="Top" Width="75" Click="calib_Click"/>
+        <Button Name="calib" Content="广播校时" HorizontalAlignment="Left" Height="19" Margin="630,271,0,0" VerticalAlignment="Top" Width="75" Click="calib_Click"/>
         <Label Content="Server IP:" HorizontalAlignment="Left" Margin="696,489,0,0" VerticalAlignment="Top"/>
         <TextBox Name="serverip" HorizontalAlignment="Left" Height="23" Margin="774,489,0,0" TextWrapping="Wrap" Text="192.168.50.222" VerticalAlignment="Top" Width="120"/>
         <TextBox Name="bindname" HorizontalAlignment="Left" Height="23" Margin="748,79,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="78"/>

@@ -25,6 +25,10 @@ using static RecoderServerApplication.MultiThread.SoftUI_Thread;
 using System.Data;
 using RecoderServerApplication.SQLite;
 using RecoderServerApplication.HttpPost;
+using System.Net.NetworkInformation;
+using System.Net.Sockets;
+using System.Net;
+using System.Text.RegularExpressions;
 
 namespace RecoderServerApplication
 {
@@ -52,14 +56,24 @@ namespace RecoderServerApplication
             }
 
 
+            serverip.Text = GetLocalIP();
+            ip.Text = serverip.Text;
+
             SQLite_InitData init = SQLite_RW.GetInitData();
             group.Text = init.init_Group;
             wifi.Text = init.init_WIFI;
             pass.Text = init.init_PASS;
-            ip.Text = init.init_IP;
+            
             port.Text = init.init_port;
+            ip.Text = init.init_IP;
             serverip.Text = init.init_Server_IP;
             porttext.Text = init.init_Server_Port;
+            /////////////////////////////////////////////
+            ///自动获取本地ip，需要连接外网
+            serverip.Text = GetLocalIP();
+            ip.Text = serverip.Text;
+            ///////////////////////////////////////////
+
             //--------------------------------------------------------------------
             //SQLiteConnection cn = new SQLiteConnection("data source=" + "database" + ".sqlite");
             //if (cn.State != System.Data.ConnectionState.Open)
@@ -81,8 +95,100 @@ namespace RecoderServerApplication
             //errormessage.ItemsSource = lis.error_message;
             //Process.Start("speex_decoder.exe","D:\\github_project\\AncientProjects\\RadioRecoder\\WPF_Server\\RecoderServerApplication\\RecoderServerApplication\\bin\\Release\\20190623225152_HS6YX83M\\HQOBJSQZ_2019-06-23-22-52-33-000_REC.wzr");
         }
-
-
+        public static string GetLocalIP()
+        {
+            string result = RunApp("route", "print", true);
+            Match m = Regex.Match(result, @"0.0.0.0\s+0.0.0.0\s+(\d+.\d+.\d+.\d+)\s+(\d+.\d+.\d+.\d+)");
+            if (m.Success)
+            {
+                return m.Groups[2].Value;
+            }
+            else
+            {
+                try
+                {
+                    System.Net.Sockets.TcpClient c = new System.Net.Sockets.TcpClient();
+                    c.Connect("www.baidu.com", 80);
+                    string ip = ((System.Net.IPEndPoint)c.Client.LocalEndPoint).Address.ToString();
+                    c.Close();
+                    return ip;
+                }
+                catch (Exception)
+                {
+                    return null;
+                }
+            }
+        }
+        /// <summary> 
+        /// 获取本机主DNS 
+        /// </summary> 
+        /// <returns></returns> 
+        public static string GetPrimaryDNS()
+        {
+            string result = RunApp("nslookup", "", true);
+            Match m = Regex.Match(result, @"\d+\.\d+\.\d+\.\d+");
+            if (m.Success)
+            {
+                return m.Value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+        /// <summary> 
+        /// 运行一个控制台程序并返回其输出参数。 
+        /// </summary> 
+        /// <param name="filename">程序名</param> 
+        /// <param name="arguments">输入参数</param> 
+        /// <returns></returns> 
+        public static string RunApp(string filename, string arguments, bool recordLog)
+        {
+            try
+            {
+                if (recordLog)
+                {
+                    Trace.WriteLine(filename + " " + arguments);
+                }
+                Process proc = new Process();
+                proc.StartInfo.FileName = filename;
+                proc.StartInfo.CreateNoWindow = true;
+                proc.StartInfo.Arguments = arguments;
+                proc.StartInfo.RedirectStandardOutput = true;
+                proc.StartInfo.UseShellExecute = false;
+                proc.Start();
+                using (System.IO.StreamReader sr = new System.IO.StreamReader(proc.StandardOutput.BaseStream, Encoding.Default))
+                {
+                    //string txt = sr.ReadToEnd(); 
+                    //sr.Close(); 
+                    //if (recordLog) 
+                    //{ 
+                    // Trace.WriteLine(txt); 
+                    //} 
+                    //if (!proc.HasExited) 
+                    //{ 
+                    // proc.Kill(); 
+                    //} 
+                    //上面标记的是原文，下面是我自己调试错误后自行修改的 
+                    System.Threading.Thread.Sleep(100);  //貌似调用系统的nslookup还未返回数据或者数据未编码完成，程序就已经跳过直接执行 
+                                        //txt = sr.ReadToEnd()了，导致返回的数据为空，故睡眠令硬件反应 
+                    if (!proc.HasExited)  //在无参数调用nslookup后，可以继续输入命令继续操作，如果进程未停止就直接执行 
+                    {    //txt = sr.ReadToEnd()程序就在等待输入，而且又无法输入，直接掐住无法继续运行 
+                        proc.Kill();
+                    }
+                    string txt = sr.ReadToEnd();
+                    sr.Close();
+                    if (recordLog)
+                        Trace.WriteLine(txt);
+                    return txt;
+                }
+            }
+            catch (Exception ex)
+            {
+                Trace.WriteLine(ex);
+                return ex.Message;
+            }
+        }
         UploadThread upt = new UploadThread();
         RecoderServerApplication.MultiThread.SoftUI_Thread UIthread = new SoftUI_Thread();
         string listbox_value;
@@ -125,7 +231,7 @@ namespace RecoderServerApplication
                     {
                         if (ComPort.OpenCOM(strcom))
                         {
-                            OpenCOM.Content = "CloseCOM";
+                            OpenCOM.Content = "关闭串口";
                             comboBox.IsEnabled = false;
                             bBegin.IsEnabled = true;
                             bEnd.IsEnabled = true;
@@ -145,7 +251,7 @@ namespace RecoderServerApplication
                 {
                     ComPort.CloseCOM();
                     radiate.IsEnabled = false;
-                    OpenCOM.Content = "OpenCOM";
+                    OpenCOM.Content = "打开串口";
                     comboBox.IsEnabled = true;
                     bBegin.IsEnabled = false;
                     bEnd.IsEnabled = false;
@@ -153,9 +259,9 @@ namespace RecoderServerApplication
                     bInit.IsEnabled = false;
 
                     bindname.IsEnabled = true;
-                    bindb.Content = "Bind";
+                    bindb.Content = "绑定";
 
-                    radiate.Content = "Radiate";
+                    radiate.Content = "广播";
                     bindb.IsEnabled = false;
                     wificon.IsEnabled = false;
                     RF_DataAnalysis.Stop_RadioSend();
@@ -226,12 +332,12 @@ namespace RecoderServerApplication
             if (Radio_MultiThread)
             {
                 Radio_Thread.Start();
-                bindb.Content = "Stop";
+                bindb.Content = "停止";
             }
             else
             {
                 Radio_Thread.Stop();
-                bindb.Content = "Bind";
+                bindb.Content = "绑定";
             }
             Radio_MultiThread = !Radio_MultiThread;
         }
@@ -244,7 +350,7 @@ namespace RecoderServerApplication
             isradiate = !isradiate;
             if (isradiate)
             {
-                radiate.Content = "Cancle";
+                radiate.Content = "取消";
                 RF_DataAnalysis.Begin_RadioSend_Search(SoftID);
                 calib.IsEnabled = false;
                 bindb.IsEnabled = false;
@@ -256,7 +362,7 @@ namespace RecoderServerApplication
             }
             else
             {
-                radiate.Content = "Radiate";
+                radiate.Content = "广播";
                 RF_DataAnalysis.Stop_RadioSend();
                 calib.IsEnabled = true;
                 bindb.IsEnabled = true;
@@ -300,7 +406,7 @@ namespace RecoderServerApplication
                 init.init_Server_IP = serverip.Text;
                 init.init_Server_Port = porttext.Text;
                 SQLite_RW.SetData(init);
-                wificon.Content = "Cancle..";
+                wificon.Content = "取消..";
                 calib.IsEnabled = false;
                 radiate.IsEnabled = false;
                 bindb.IsEnabled = false;
@@ -317,7 +423,7 @@ namespace RecoderServerApplication
             else
             {
 
-                wificon.Content = "Server";
+                wificon.Content = "连接WIFI";
                 calib.IsEnabled = true;
                 radiate.IsEnabled = true;
                 bindb.IsEnabled = true;
@@ -338,7 +444,7 @@ namespace RecoderServerApplication
             iscalib = !iscalib;
             if (iscalib)
             {
-                calib.Content = "Cancle";
+                calib.Content = "取消";
                 RF_DataAnalysis.Begin_RadioSend_Calibration(SoftID);
                 //calib.IsEnabled = false;
                 bindb.IsEnabled = false;
@@ -350,7 +456,7 @@ namespace RecoderServerApplication
             }
             else
             {
-                calib.Content = "Calibration";
+                calib.Content = "广播校时";
                 RF_DataAnalysis.Stop_RadioSend();
                 //calib.IsEnabled = true;
                 bindb.IsEnabled = true;
@@ -377,25 +483,18 @@ namespace RecoderServerApplication
                 init.init_Server_Port = porttext.Text;
                 SQLite_RW.SetData(init);
                 lis.StartListen(int.Parse(porttext.Text),serverip.Text, int.Parse(fstext.Text), int.Parse(packge.Text), DateTime.Now.ToString("yyyyMMddHHmmss")+"_"+ SoftID);
-                startbutton.Content = "StopServer";
+                startbutton.Content = "停止服务器";
             }
             else
             {
                 
                 lis.StopListen();
-                startbutton.Content = "StartServer";
+                startbutton.Content = "启动服务器";
             }
             isStartServer = !isStartServer;
         }
 
-        private void button1_Click(object sender, RoutedEventArgs e)
-        {
-            //byte[] data = { 15, 0, 54, 65, 46, 132, 5, 46, 135, 5, 54, 61, 3, 32, 0, 0, 0, 0x30, 0x31, 0x32,0x33, 0x34, 0x35, 0x0d,0x0a };
-            //string str = "012345\r\n";
-            //byte[] strdata = Encoding.ASCII.GetBytes(str);
-            //int i =WIFI_Protocol.Search_ByteArray_String(ref data,ref strdata);
-            //MessageBox.Show(data[i].ToString());
-        }
+
 
         private void Group_TextChanged(object sender, TextChangedEventArgs e)
         {
@@ -768,5 +867,9 @@ namespace RecoderServerApplication
 
             //MessageBox.Show(select.ID);
         }
+
+        
+
     }
 }
+

@@ -28,7 +28,7 @@ namespace RecoderServerApplication.MultiThread
         public string ipaddress;
         public string port;
         Thread Service_Function;
-
+        bool isEnable_Timer = false;
         public int GetAllErrorNumber()
         {
             if (WavCreate == null)
@@ -96,10 +96,26 @@ namespace RecoderServerApplication.MultiThread
         }
         Device_State dstate;
         bool Thread_Loop = true;
+
+        public void theout(object source, System.Timers.ElapsedEventArgs e)
+        {
+            dstate = Device_State.Offline;
+            Device_Recv_Struct.Device_State = "离线";
+            isEnable_Timer = false;
+        }
         public void ServiceFunction()
         {
+            
             dstate = Device_State.Online;
             Device_Recv_Struct.Device_State = "待机";
+            System.Timers.Timer t = new System.Timers.Timer(60000);//实例化Timer类，设置间隔时间为10000毫秒；
+
+            t.Elapsed += new System.Timers.ElapsedEventHandler(theout);//到达时间的时候执行事件；
+
+            t.AutoReset = false;//设置是执行一次（false）还是一直执行(true)；
+
+            t.Enabled = true;//是否执行System.Timers.Timer.Elapsed事件；
+            t.Stop();
             while (Thread_Loop)
             {
                 try
@@ -113,12 +129,20 @@ namespace RecoderServerApplication.MultiThread
                 catch (Exception e)
                 {
                     Thread.Sleep(1000);
+                    if(dstate == Device_State.Recording && !isEnable_Timer)
+                    {
+                        isEnable_Timer = true;
+                        t.Start();
+                        continue;
+                    }
                     dstate = Device_State.Offline;
                     Device_Recv_Struct.Device_State = "离线";
                     continue;
                 }
                 List<TransData_Struct> lis = new List<TransData_Struct>();
                 AnalysisRawData(ref RecvData, ref lis);
+                t.Stop();
+                isEnable_Timer = false;
                 foreach (var item in lis)
                 {
                     object recv = State_Response_Function(item);

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using RecoderServerApplication.SQLite;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -11,6 +12,7 @@ using System.Windows.Media;
 
 namespace RecoderServerApplication.MultiThread
 {
+
     class SoftUI_Thread
     {
         Thread Refresh_Thread;
@@ -41,6 +43,12 @@ namespace RecoderServerApplication.MultiThread
                 get { return id; }
                 set { id = value; OnPropertyChanged(new PropertyChangedEventArgs("ID")); }
             }
+            public string name;
+            public string Name
+            {
+                get { return name; }
+                set { name = value; OnPropertyChanged(new PropertyChangedEventArgs("Name")); }
+            }
             public string state;
             public string State
             {
@@ -59,36 +67,8 @@ namespace RecoderServerApplication.MultiThread
                 get { return repairtimes; }
                 set { repairtimes = value; OnPropertyChanged(new PropertyChangedEventArgs("RepairTimes")); }
             }
-            public class BGConvert : IValueConverter
-            {
+            
 
-                public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
-
-                {
-
-                    if ((string)value == "在线")
-
-                    {
-
-                        return new SolidColorBrush(Colors.Red);
-
-                    }
-
-                    else
-
-                        return new SolidColorBrush(Colors.White);
-
-                }
-
-                public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
-
-                {
-
-                    throw new NotImplementedException();
-
-                }
-
-            }
             #region // INotifyPropertyChanged成员
             public event PropertyChangedEventHandler PropertyChanged;
             public void OnPropertyChanged(PropertyChangedEventArgs e)
@@ -158,14 +138,54 @@ namespace RecoderServerApplication.MultiThread
                     //listServerListUI.Clear();
                     //listUI_Trans.Clear();
                 });
+                int count_Online = 0;
+                int count_Offline = 0;
+                int count_Recording = 0;
+                int count_WaitingRecording = 0;
+
                 for (int i = 0; i < ListeningThread.DeviceList_Thread.Count; i++)
                 {
+
+                    switch(ListeningThread.DeviceList_Thread[i].Device_Recv_Struct.Device_State)
+                    {
+                        case "离线":
+                            count_Offline++;
+                            break;
+                        case "待机":
+                            count_Online++;
+                            break;
+                        case "录音中":
+                            count_Recording++;
+                            break;
+                        case "等待绑定":
+                            break;
+                        case "等待录音":
+                            count_WaitingRecording++;
+                            break;
+                        case "检查错误中":
+                            break;
+                    }
+
+
+
+                    string serNickname = "";
+                    for (int j = 0; j < SQLite_RW.SqlData.Count; j++)
+                    {
+                        string serID = SQLite_RW.SqlData[j].DeviceID;
+                        
+                        if (ListeningThread.DeviceList_Thread[i].Device_Recv_Struct.Device_ID == serID)
+                        {
+                            serNickname = SQLite_RW.SqlData[j].NickName;
+                            break;
+                        }
+                    }
                     ServerListUI data = new ServerListUI
                     {
                         Index = i.ToString(),
                         IPAddress = ListeningThread.DeviceList_Thread[i].ipaddress,
                         Port = ListeningThread.DeviceList_Thread[i].port,
                         ID = ListeningThread.DeviceList_Thread[i].Device_Recv_Struct.Device_ID,
+                        Name = serNickname,
                         State = ListeningThread.DeviceList_Thread[i].Device_Recv_Struct.Device_State,
                         Error = ListeningThread.DeviceList_Thread[i].GetAllErrorNumber().ToString(),
                         RepairTimes = ListeningThread.DeviceList_Thread[i].GetAllRepairNumber().ToString()
@@ -205,11 +225,13 @@ namespace RecoderServerApplication.MultiThread
                                 listServerListUI[j].Index = data.index;
                                 listServerListUI[j].IPAddress = data.IPAddress;
                                 listServerListUI[j].Port = data.Port;
+                                listServerListUI[j].Name = data.Name;
                                 listServerListUI[j].RepairTimes = data.RepairTimes;
                                 listServerListUI[j].State = data.State;
                             }
                         }
-                        if(flag == false)
+                        
+                        if (flag == false)
                             listServerListUI.Add(data);
 
 
@@ -219,6 +241,24 @@ namespace RecoderServerApplication.MultiThread
                         //main.list.Items.Add(data2);
                     });
                 }
+
+
+                main.Dispatcher.Invoke(() =>
+                {
+                    main.bBegin.IsEnabled = false;
+                    main.bInit.IsEnabled = false;
+                    main.device_count.Content = ListeningThread.DeviceList_Thread.Count.ToString() + " / " + SQLite_RW.SqlData.Count.ToString();
+                    //main.bEnd.IsEnabled = false;
+                    if (count_Online == ListeningThread.DeviceList_Thread.Count)
+                    {
+                        main.bInit.IsEnabled = true;
+                    }
+                    if (count_WaitingRecording == ListeningThread.DeviceList_Thread.Count)
+                    {
+                        main.bBegin.IsEnabled = true;
+                    }
+                });
+
                 Thread.Sleep(100);
             }
         }
